@@ -457,15 +457,6 @@ final class KnownTranslationFactory{
 		return new Translatable(KnownTranslationKeys::COMMANDS_SETWORLDSPAWN_USAGE, []);
 	}
 
-	public static function commands_spawnpoint_success(Translatable|string $param0, Translatable|string $param1, Translatable|string $param2, Translatable|string $param3) : Translatable{
-		return new Translatable(KnownTranslationKeys::COMMANDS_SPAWNPOINT_SUCCESS, [
-			0 => $param0,
-			1 => $param1,
-			2 => $param2,
-			3 => $param3,
-		]);
-	}
-
 	public static function commands_spawnpoint_usage() : Translatable{
 		return new Translatable(KnownTranslationKeys::COMMANDS_SPAWNPOINT_USAGE, []);
 	}
@@ -1699,6 +1690,15 @@ final class KnownTranslationFactory{
 
 	public static function pocketmine_command_spawnpoint_description() : Translatable{
 		return new Translatable(KnownTranslationKeys::POCKETMINE_COMMAND_SPAWNPOINT_DESCRIPTION, []);
+	}
+
+	public static function pocketmine_command_spawnpoint_success(Translatable|string $param0, Translatable|string $param1, Translatable|string $param2, Translatable|string $param3) : Translatable{
+		return new Translatable(KnownTranslationKeys::POCKETMINE_COMMAND_SPAWNPOINT_SUCCESS, [
+			0 => $param0,
+			1 => $param1,
+			2 => $param2,
+			3 => $param3,
+		]);
 	}
 
 	public static function pocketmine_command_status_description() : Translatable{
