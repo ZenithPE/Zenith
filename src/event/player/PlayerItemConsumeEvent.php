@@ -35,12 +35,13 @@ use pocketmine\utils\Utils;
 class PlayerItemConsumeEvent extends PlayerEvent implements Cancellable{
 	use CancellableTrait;
 
-	/** @var Item[] */
-	private array $residue = [];
-
+	/**
+	 * @param Item[] $residue
+	 */
 	public function __construct(
 		Player $player,
-		private Item $item
+		private Item $item,
+		private array $residue = []
 	){
 		$this->player = $player;
 	}
