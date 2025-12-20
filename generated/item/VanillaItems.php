@@ -35,7 +35,7 @@ use function mb_strtoupper;
  *
  * This class is generated automatically from source class {@link VanillaItemsInputs}. Do not modify it manually.
  * It must be regenerated whenever the source class is changed.
- * @see build/generate-registry-interface.php
+ * @see build/codegen/registry-interface.php
  */
 final class VanillaItems{
 	private static Boat $_mACACIA_BOAT;

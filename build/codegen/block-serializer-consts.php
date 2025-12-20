@@ -56,7 +56,7 @@ use function substr;
 use const SORT_STRING;
 use const STDERR;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 class BlockPaletteReport{
 	/**
@@ -161,7 +161,7 @@ function safe_fopen(string $file, string $flags){
  * @phpstan-param list<string> $seenIds
  */
 function generateBlockIds(array $seenIds) : void{
-	$output = safe_fopen(dirname(__DIR__) . '/generated/data/bedrock/block/BlockTypeNames.php', 'wb');
+	$output = safe_fopen(dirname(__DIR__, 2) . '/generated/data/bedrock/block/BlockTypeNames.php', 'wb');
 
 	fwrite($output, generateClassHeader(BlockTypeNames::class));
 
@@ -174,7 +174,7 @@ function generateBlockIds(array $seenIds) : void{
 }
 
 function generateBlockStateNames(BlockPaletteReport $data) : void{
-	$output = safe_fopen(dirname(__DIR__) . '/generated/data/bedrock/block/BlockStateNames.php', 'wb');
+	$output = safe_fopen(dirname(__DIR__, 2) . '/generated/data/bedrock/block/BlockStateNames.php', 'wb');
 
 	fwrite($output, generateClassHeader(BlockStateNames::class));
 	foreach(Utils::stringifyKeys($data->seenStateValues) as $state => $values){
@@ -187,7 +187,7 @@ function generateBlockStateNames(BlockPaletteReport $data) : void{
 }
 
 function generateBlockStringValues(BlockPaletteReport $data) : void{
-	$output = safe_fopen(dirname(__DIR__) . '/generated/data/bedrock/block/BlockStateStringValues.php', 'wb');
+	$output = safe_fopen(dirname(__DIR__, 2) . '/generated/data/bedrock/block/BlockStateStringValues.php', 'wb');
 
 	fwrite($output, generateClassHeader(BlockStateStringValues::class));
 	foreach(Utils::stringifyKeys($data->seenStateValues) as $stateName => $values){

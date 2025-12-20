@@ -33,7 +33,7 @@ use function unlink;
 use const PHP_EOL;
 use const STDERR;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 $fix = false;
 if(count($argv) === 2 && $argv[1] === "--fix"){
@@ -43,12 +43,12 @@ if(count($argv) === 2 && $argv[1] === "--fix"){
 	fwrite(STDERR, "Usage: " . __FILE__ . " [--fix]" . PHP_EOL);
 	exit(1);
 }
-$generatedDir = realpath(dirname(__DIR__) . '/generated/');
+$generatedDir = realpath(dirname(__DIR__, 2) . '/generated/');
 if($generatedDir === false){
 	fwrite(STDERR, "generated/ dir doesn't exist or isn't accessible" . PHP_EOL);
 	exit(1);
 }
-$srcDir = realpath(dirname(__DIR__) . '/src');
+$srcDir = realpath(dirname(__DIR__, 2) . '/src');
 if($srcDir === false){
 	fwrite(STDERR, "src/ dir doesn't exist or isn't accessible" . PHP_EOL);
 	exit(1);

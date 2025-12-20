@@ -157,4 +157,4 @@ jobs:
 
       - name: Check for generated code files colliding with src files
         run:
-          php build/check-gencode-file-collisions.php
+          php build/codegen/check-file-collisions.php

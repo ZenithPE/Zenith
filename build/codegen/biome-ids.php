@@ -41,7 +41,7 @@ use function str_replace;
 use function strtoupper;
 use const SORT_NUMERIC;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 const HEADER = <<<'HEADER'
 <?php
@@ -134,6 +134,6 @@ foreach(Utils::promoteKeys($ids) as $name => $id){
 	}
 	$cleanedIds[$name] = $id;
 }
-generate($cleanedIds, dirname(__DIR__) . '/generated/data/bedrock/BiomeIds.php');
+generate($cleanedIds, dirname(__DIR__, 2) . '/generated/data/bedrock/BiomeIds.php');
 
 echo "Done. Don't forget to run CS fixup after generating code.\n";

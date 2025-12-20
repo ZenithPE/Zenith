@@ -41,7 +41,7 @@ use function strtoupper;
 use const SORT_STRING;
 use const STDERR;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 function constifyMcId(string $id) : string{
 	return strtoupper(explode(":", $id, 2)[1]);
@@ -70,7 +70,7 @@ function generateItemIds(ItemTypeDictionary $dictionary, BlockItemIdMap $blockIt
 	}
 	asort($ids, SORT_STRING);
 
-	$file = safe_fopen(dirname(__DIR__) . '/generated/data/bedrock/item/ItemTypeNames.php', 'wb');
+	$file = safe_fopen(dirname(__DIR__, 2) . '/generated/data/bedrock/item/ItemTypeNames.php', 'wb');
 
 	fwrite($file, <<<'HEADER'
 <?php

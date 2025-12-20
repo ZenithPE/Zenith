@@ -51,7 +51,7 @@ use const STDERR;
 
 const PARAMETER_REGEX = '/{%(.+?)}/';
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 function constantify(string $permissionName) : string{
 	return strtoupper(str_replace([".", "-"], "_", $permissionName));
@@ -108,7 +108,7 @@ HEADER;
  * @phpstan-param array<string, string> $languageDefinitions
  */
 function generate_known_translation_keys(array $languageDefinitions) : void{
-	$file = safe_fopen(dirname(__DIR__) . '/generated/lang/KnownTranslationKeys.php', 'wb');
+	$file = safe_fopen(dirname(__DIR__, 2) . '/generated/lang/KnownTranslationKeys.php', 'wb');
 
 	fwrite($file, SHARED_HEADER);
 	fwrite($file, <<<'HEADER'
@@ -138,7 +138,7 @@ HEADER);
  * @phpstan-param array<string, string> $languageDefinitions
  */
 function generate_known_translation_parameter_info(array $languageDefinitions) : void{
-	$file = safe_fopen(dirname(__DIR__) . '/generated/lang/KnownTranslationParameterInfo.php', 'wb');
+	$file = safe_fopen(dirname(__DIR__, 2) . '/generated/lang/KnownTranslationParameterInfo.php', 'wb');
 
 	fwrite($file, SHARED_HEADER);
 	fwrite($file, <<<'HEADER'
@@ -179,7 +179,7 @@ HEADER);
  * @phpstan-param array<string, string> $languageDefinitions
  */
 function generate_known_translation_factory(array $languageDefinitions) : void{
-	$file = safe_fopen(dirname(__DIR__) . '/generated/lang/KnownTranslationFactory.php', 'wb');
+	$file = safe_fopen(dirname(__DIR__, 2) . '/generated/lang/KnownTranslationFactory.php', 'wb');
 	ob_start();
 
 	fwrite($file, SHARED_HEADER);

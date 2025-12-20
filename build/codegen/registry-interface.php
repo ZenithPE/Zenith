@@ -122,7 +122,7 @@ HEADER;
 	$startClass = <<<CLASS
  * This class is generated automatically from source class {@link $sourceShortClassName}. Do not modify it manually.
  * It must be regenerated whenever the source class is changed.
- * @see build/$selfName
+ * @see build/codegen/$selfName
  */
 final class $interfaceShortClassName{
 
@@ -386,7 +386,7 @@ function processFile(string $file, string $sourceDir, string $outputDir) : void{
 	}
 }
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 if(is_dir($argv[1])){
 	if(file_exists($argv[2]) && !is_dir($argv[2])){

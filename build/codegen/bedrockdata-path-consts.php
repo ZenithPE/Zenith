@@ -39,7 +39,7 @@ use const pocketmine\BEDROCK_DATA_PATH;
 use const SCANDIR_SORT_ASCENDING;
 use const STDERR;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 function constantify(string $permissionName) : string{
 	return strtoupper(str_replace([".", "-"], "_", $permissionName));
@@ -79,7 +79,7 @@ foreach($files as $file){
 	$consts[] = $file;
 }
 
-$path = dirname(__DIR__) . '/generated/data/bedrock/BedrockDataFiles.php';
+$path = dirname(__DIR__, 2) . '/generated/data/bedrock/BedrockDataFiles.php';
 $dir = dirname($path);
 if(!@mkdir($dir, recursive: true) && !is_dir($dir)){
 	fwrite(STDERR, "Couldn't create directory: $dir" . PHP_EOL);
