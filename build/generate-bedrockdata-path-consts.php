@@ -30,6 +30,7 @@ use function fopen;
 use function fwrite;
 use function is_dir;
 use function is_file;
+use function mkdir;
 use function scandir;
 use function str_replace;
 use function strtoupper;

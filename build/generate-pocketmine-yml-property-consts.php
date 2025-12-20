@@ -21,8 +21,23 @@
 
 declare(strict_types=1);
 
+namespace pocketmine\build\generate_pocketmine_yml_property_consts;
+
 use pocketmine\utils\Filesystem;
 use pocketmine\utils\Utils;
+use function dirname;
+use function fclose;
+use function fopen;
+use function fwrite;
+use function is_array;
+use function is_dir;
+use function ksort;
+use function mkdir;
+use function str_replace;
+use function strtoupper;
+use function yaml_parse;
+use const SORT_STRING;
+use const STDERR;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 

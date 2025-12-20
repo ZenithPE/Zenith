@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace pocketmine\build\generate_item_serializer_ids;
 
 use pocketmine\data\bedrock\item\BlockItemIdMap;
-use pocketmine\errorhandler\ErrorToExceptionHandler;
 use pocketmine\network\mcpe\convert\ItemTypeDictionaryFromDataHelper;
 use pocketmine\network\mcpe\protocol\serializer\ItemTypeDictionary;
 use pocketmine\utils\Utils;
@@ -36,6 +35,8 @@ use function fclose;
 use function file_get_contents;
 use function fopen;
 use function fwrite;
+use function is_dir;
+use function mkdir;
 use function strtoupper;
 use const SORT_STRING;
 use const STDERR;

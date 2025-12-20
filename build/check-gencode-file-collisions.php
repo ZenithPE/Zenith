@@ -21,6 +21,18 @@
 
 declare(strict_types=1);
 
+namespace pocketmine\build\check_gencode_file_collisions;
+
+use Symfony\Component\Filesystem\Path;
+use function count;
+use function dirname;
+use function file_exists;
+use function fwrite;
+use function realpath;
+use function unlink;
+use const PHP_EOL;
+use const STDERR;
+
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $fix = false;
@@ -42,16 +54,16 @@ if($srcDir === false){
 	exit(1);
 }
 
-$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($generatedDir, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO));
+$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($generatedDir, \RecursiveDirectoryIterator::SKIP_DOTS | \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO));
 $count = 0;
 /**
- * @var SplFileInfo $file
+ * @var \SplFileInfo $file
  */
 foreach($iterator as $file) {
 	$genFile = $file->getRealPath();
 
 	$relative = $iterator->getSubPathname();
-	$srcFile = \Symfony\Component\Filesystem\Path::join($srcDir, $relative);
+	$srcFile = Path::join($srcDir, $relative);
 	if(file_exists($srcFile)){
 		$count++;
 		if($fix){

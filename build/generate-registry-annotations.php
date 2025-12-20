@@ -39,9 +39,11 @@ use function is_dir;
 use function ksort;
 use function mb_strtoupper;
 use function preg_match;
+use function sleep;
 use function sprintf;
 use function str_ends_with;
 use function str_replace;
+use const PHP_EOL;
 use const SORT_STRING;
 use const STDERR;
 
