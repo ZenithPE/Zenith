@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace pocketmine\build\update_registry_interface;
 
 use pocketmine\utils\AssumptionFailedError;
+use pocketmine\utils\CloningRegistrySource;
 use pocketmine\utils\Filesystem;
 use pocketmine\utils\RegistrySource;
 use pocketmine\utils\Utils;
@@ -152,6 +153,11 @@ CLASS;
 		$preprocessorPrefix = "";
 		$preprocessorSuffix = "";
 		$preprocessorMapper = "self::\$members";
+	}
+	if($registrySource instanceof CloningRegistrySource){
+		$preprocessorPrefix = "clone $preprocessorPrefix";
+		$preprocessorMapper = "Utils::cloneObjectArray($preprocessorMapper)";
+		$importClasses[Utils::class] = true;
 	}
 
 	$commonParent = null;
