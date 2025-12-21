@@ -161,7 +161,7 @@ class Language{
 				$untranslatedParameterCount = $this->getUsedParameterCount($baseText, $parameterCount);
 				return $str;
 			}
-		}else{ //key not found, embedded inside format string, or doesn't match prefix
+		}else{ //key not found or embedded inside format string
 			$baseText = $this->parseTranslation($str, $onlyPrefix, $parameterCount);
 			$untranslatedParameterCount = $parameterCount;
 		}
