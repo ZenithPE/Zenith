@@ -522,6 +522,10 @@ class InGamePacketHandler extends PacketHandler{
 						$hungerAttr = $this->player->getAttributeMap()->get(Attribute::HUNGER) ?? throw new AssumptionFailedError();
 						$hungerAttr->markSynchronized(false);
 					}
+					//TODO: workaround goat horns getting stuck in the "using item" state
+					//this timed-trigger behaviour is also used for other items apart from food
+					//in the future we'll generalise this logic and add proper hooks for it
+					$this->player->setUsingItem(false);
 					return true;
 				}
 				$this->player->useHeldItem();
