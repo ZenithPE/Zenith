@@ -510,6 +510,9 @@ class NetworkSession{
 				if($cancel && !$ev->isCancelled()){
 					//uncancelled by a plugin, let it through to DataPacketReceiveEvent
 					$handlerAction = PacketHandlerAction::HANDLED;
+				}elseif(!$cancel && $ev->isCancelled()){
+					//explicitly cancelled by plugin, drop it quietly
+					$handlerAction = PacketHandlerAction::DISCARD_SILENT;
 				}
 			}
 
