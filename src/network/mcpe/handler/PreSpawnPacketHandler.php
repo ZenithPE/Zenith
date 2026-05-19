@@ -43,6 +43,7 @@ use pocketmine\network\mcpe\protocol\types\NetworkPermissions;
 use pocketmine\network\mcpe\protocol\types\PlayerMovementSettings;
 use pocketmine\network\mcpe\protocol\types\ServerTelemetryData;
 use pocketmine\network\mcpe\protocol\types\SpawnSettings;
+use pocketmine\network\mcpe\protocol\VoxelShapesPacket;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\timings\Timings;
@@ -70,6 +71,9 @@ class PreSpawnPacketHandler extends PacketHandler{
 			$world = $location->getWorld();
 
 			$typeConverter = $this->session->getTypeConverter();
+
+			$this->session->getLogger()->debug("Preparing VoxelShapesPacket");
+			$this->session->sendDataPacket(VoxelShapesPacket::create([], [], 0), true); // TODO: Voxel shapes support
 
 			$this->session->getLogger()->debug("Preparing StartGamePacket");
 			$levelSettings = new LevelSettings();

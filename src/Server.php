@@ -180,7 +180,7 @@ use const PHP_INT_MAX;
 /**
  * The class that manages everything
  */
-class Server{
+class Server {
 	use NotCloneable;
 	use NotSerializable;
 
