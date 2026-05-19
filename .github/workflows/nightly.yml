@@ -20,11 +20,11 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP
-        uses: pmmp/setup-php-action@2.1.0
+        uses: shivammathur/setup-php@2.32.0
         with:
           php-version: "8.1"
-          install-path: "${{ github.workspace }}/php"
-          pm-version-major: "5"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git for HTTPS
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
@@ -40,7 +40,7 @@ jobs:
         run: composer install --no-dev --classmap-authoritative --ignore-platform-reqs --prefer-dist --no-interaction
 
       - name: Build server phar
-        run: ${{ github.workspace }}/php/bin/php -dphar.readonly=0 build/server-phar.php --out Zenith.phar --git "${{ github.sha }}"
+        run: php -dphar.readonly=0 build/server-phar.php --out Zenith.phar --git "${{ github.sha }}"
 
       - name: Delete existing nightly release
         uses: dev-drprasad/delete-tag-and-release@v1.1

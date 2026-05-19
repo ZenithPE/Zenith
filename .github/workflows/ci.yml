@@ -15,11 +15,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: pmmp/setup-php-action@2.1.0
+        uses: shivammathur/setup-php@2.32.0
         with:
           php-version: "8.1"
-          install-path: "${{ github.workspace }}/php"
-          pm-version-major: "5"
+          extensions: igbinary, yaml, pmmp/ext-encoding@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git for HTTPS
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
@@ -32,7 +33,7 @@ jobs:
           restore-keys: "php-8.1-composer-"
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze --no-progress
@@ -46,11 +47,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: pmmp/setup-php-action@2.1.0
+        uses: shivammathur/setup-php@2.32.0
         with:
           php-version: "8.1"
-          install-path: "${{ github.workspace }}/php"
-          pm-version-major: "5"
+          extensions: igbinary, yaml, pmmp/ext-encoding@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git for HTTPS
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
@@ -63,7 +65,7 @@ jobs:
           restore-keys: "php-8.1-composer-"
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction --ignore-platform-reqs
 
       - name: Run PHPUnit tests
-        run: ${{ github.workspace }}/php/bin/php ./vendor/bin/phpunit --bootstrap vendor/autoload.php --fail-on-warning tests/phpunit
+        run: ./vendor/bin/phpunit --bootstrap vendor/autoload.php --fail-on-warning tests/phpunit
