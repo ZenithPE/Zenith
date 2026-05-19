@@ -20,30 +20,27 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP
-        uses: pmmp/setup-php-action@3.2.0
+        uses: pmmp/setup-php-action@fa2accea978a84097cf40ecc7d46b2d71f258bd5
         with:
           php-version: "8.1"
-          install-path: "./bin"
+          install-path: "${{ github.workspace }}/php"
           pm-version-major: "5"
 
       - name: Configure git for HTTPS
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
-      - name: Restore Composer package cache
+      - name: Load Composer package cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/composer/files
-            ~/.cache/composer/vcs
-          key: "composer-v2-cache-nightly-${{ hashFiles('./composer.lock') }}"
-          restore-keys: |
-            composer-v2-cache-
+          path: "~/.cache/composer"
+          key: "php-8.1-composer-nightly-${{ hashFiles('**/composer.json') }}"
+          restore-keys: "php-8.1-composer-nightly-"
 
       - name: Install dependencies (no-dev)
         run: composer install --no-dev --classmap-authoritative --ignore-platform-reqs --prefer-dist --no-interaction
 
       - name: Build server phar
-        run: ./bin/php8/bin/php -dphar.readonly=0 build/server-phar.php --out Zenith.phar --git "${{ github.sha }}"
+        run: ${{ github.workspace }}/php/bin/php -dphar.readonly=0 build/server-phar.php --out Zenith.phar --git "${{ github.sha }}"
 
       - name: Delete existing nightly release
         uses: dev-drprasad/delete-tag-and-release@v1.1
