@@ -876,12 +876,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ZenithPE/BedrockData.git",
-                "reference": "32c25012e1833ca71a6b385d492825cedd12071c"
+                "reference": "d331aec7c69ba8e6afa9adc1a3f8346de35ca9d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ZenithPE/BedrockData/zipball/32c25012e1833ca71a6b385d492825cedd12071c",
-                "reference": "32c25012e1833ca71a6b385d492825cedd12071c",
+                "url": "https://api.github.com/repos/ZenithPE/BedrockData/zipball/d331aec7c69ba8e6afa9adc1a3f8346de35ca9d5",
+                "reference": "d331aec7c69ba8e6afa9adc1a3f8346de35ca9d5",
                 "shasum": ""
             },
             "type": "library",
@@ -892,7 +892,7 @@
             "support": {
                 "source": "https://github.com/ZenithPE/BedrockData/tree/bedrock-1.26.30"
             },
-            "time": "2026-05-20T17:52:22+00:00"
+            "time": "2026-05-22T17:53:37+00:00"
         },
         {
             "name": "zenith/bedrock-protocol",
@@ -900,12 +900,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ZenithPE/BedrockProtocol.git",
-                "reference": "427b4558e311bd25bb521d694149b838ea38e705"
+                "reference": "5132c8383c86476149a3053b47aa483492e48c7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ZenithPE/BedrockProtocol/zipball/427b4558e311bd25bb521d694149b838ea38e705",
-                "reference": "427b4558e311bd25bb521d694149b838ea38e705",
+                "url": "https://api.github.com/repos/ZenithPE/BedrockProtocol/zipball/5132c8383c86476149a3053b47aa483492e48c7a",
+                "reference": "5132c8383c86476149a3053b47aa483492e48c7a",
                 "shasum": ""
             },
             "require": {
@@ -948,7 +948,7 @@
             "support": {
                 "source": "https://github.com/ZenithPE/BedrockProtocol/tree/bedrock-1.26.30"
             },
-            "time": "2026-05-20T16:45:05+00:00"
+            "time": "2026-05-22T11:33:51+00:00"
         }
     ],
     "packages-dev": [
