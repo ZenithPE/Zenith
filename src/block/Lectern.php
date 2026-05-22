@@ -33,6 +33,9 @@ use pocketmine\item\WritableBookBase;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\ContainerOpenPacket;
+use pocketmine\network\mcpe\protocol\types\BlockPosition;
+use pocketmine\network\mcpe\protocol\types\inventory\WindowTypes;
 use pocketmine\player\Player;
 use pocketmine\world\sound\LecternPlaceBookSound;
 use function count;
@@ -121,11 +124,17 @@ class Lectern extends Transparent implements HorizontalFacing{
 	}
 
 	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null, array &$returnedItems = []) : bool{
-		if($this->book === null && $item instanceof WritableBookBase){
-			$world = $this->position->getWorld();
-			$world->setBlock($this->position, $this->setBook($item));
-			$world->addSound($this->position, new LecternPlaceBookSound());
-			$item->pop();
+		if($this->book === null) {
+			if($item instanceof WritableBookBase){
+				$world = $this->position->getWorld();
+				$world->setBlock($this->position, $this->setBook($item));
+				$world->addSound($this->position, new LecternPlaceBookSound());
+				$item->pop();
+			}
+		} else {
+			if($player !== null){
+				$this->openLecternToPlayer($player);
+			}
 		}
 		return true;
 	}
@@ -164,5 +173,18 @@ class Lectern extends Transparent implements HorizontalFacing{
 			$this->producingSignal = false;
 			$this->position->getWorld()->setBlock($this->position, $this);
 		}
+	}
+
+	public function openLecternToPlayer(Player $player) : void{
+		$packet = ContainerOpenPacket::blockInv(-1,
+			WindowTypes::LECTERN,
+			new BlockPosition(
+				$this->position->getFloorX(),
+				$this->position->getFloorY(),
+				$this->position->getFloorZ()
+			)
+		);
+
+		$player->getNetworkSession()->sendDataPacket($packet);
 	}
 }
