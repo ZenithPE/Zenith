@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\inventory;
+namespace pocketmine\block\inventory;
 
-use pocketmine\block\inventory\BlockInventory;
-use pocketmine\block\inventory\BlockInventoryTrait;
+use pocketmine\inventory\SimpleInventory;
 use pocketmine\world\Position;
 
 class CommandBlockInventory extends SimpleInventory implements BlockInventory {

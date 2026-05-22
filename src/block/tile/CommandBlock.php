@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace pocketmine\block\tile;
 
+use pocketmine\block\inventory\CommandBlockInventory;
 use pocketmine\command\CommandBlockSender;
-use pocketmine\inventory\CommandBlockInventory;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\world\World;
