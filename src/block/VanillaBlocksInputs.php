@@ -49,6 +49,7 @@ use pocketmine\block\tile\HangingSign as TileHangingSign;
 use pocketmine\block\tile\Hopper as TileHopper;
 use pocketmine\block\tile\ItemFrame as TileItemFrame;
 use pocketmine\block\tile\Jukebox as TileJukebox;
+use pocketmine\block\tile\CommandBlock as TileCommandBlock;
 use pocketmine\block\tile\Lectern as TileLectern;
 use pocketmine\block\tile\MobHead as TileMobHead;
 use pocketmine\block\tile\MonsterSpawner as TileMonsterSpawner;
@@ -181,6 +182,9 @@ final class VanillaBlocksInputs extends RegistrySource{
 
 		$chestBreakInfo = new Info(BreakInfo::axe(2.5));
 		self::register("chest", fn(BID $id) => new Chest($id, "Chest", $chestBreakInfo), TileChest::class);
+		self::register("command_block", fn(BID $id) => new CommandBlock($id, "Command Block", new Info(BreakInfo::indestructible())), TileCommandBlock::class);
+		self::register("chain_command_block", fn(BID $id) => new CommandBlock($id, "Chain Command Block", new Info(BreakInfo::indestructible())), TileCommandBlock::class);
+		self::register("repeating_command_block", fn(BID $id) => new CommandBlock($id, "Repeating Command Block", new Info(BreakInfo::indestructible())), TileCommandBlock::class);
 		self::register("clay", fn(BID $id) => new Clay($id, "Clay Block", new Info(BreakInfo::shovel(0.6))));
 		self::register("coal", fn(BID $id) => new Coal($id, "Coal Block", new Info(BreakInfo::pickaxe(5.0, ToolTier::WOOD, 30.0))));
 

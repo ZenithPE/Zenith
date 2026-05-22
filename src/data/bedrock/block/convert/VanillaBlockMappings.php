@@ -40,6 +40,7 @@ use pocketmine\block\Cake;
 use pocketmine\block\Candle;
 use pocketmine\block\CaveVines;
 use pocketmine\block\ChiseledBookshelf;
+use pocketmine\block\CommandBlock;
 use pocketmine\block\ChorusFlower;
 use pocketmine\block\CocoaBlock;
 use pocketmine\block\Copper;
@@ -1332,6 +1333,13 @@ final class VanillaBlockMappings{
 		]));
 		$reg->mapModel(Model::create(Blocks::CHISELED_QUARTZ(), Ids::CHISELED_QUARTZ_BLOCK)->properties([$commonProperties->pillarAxis]));
 		$reg->mapModel(Model::create(Blocks::CHEST(), Ids::CHEST)->properties([$commonProperties->horizontalFacingCardinal]));
+		$commandBlockProperties = [
+			new BoolProperty(StateNames::CONDITIONAL_BIT, fn(CommandBlock $b) => $b->isConditional(), fn(CommandBlock $b, bool $v) => $b->setConditional($v)),
+			new ValueFromIntProperty(StateNames::FACING_DIRECTION, ValueMappings::getInstance()->facing, fn(CommandBlock $b) => $b->getFacing(), fn(CommandBlock $b, int $v) => $b->setFacing($v)),
+		];
+		$reg->mapModel(Model::create(Blocks::COMMAND_BLOCK(), Ids::COMMAND_BLOCK)->properties($commandBlockProperties));
+		$reg->mapModel(Model::create(Blocks::CHAIN_COMMAND_BLOCK(), Ids::CHAIN_COMMAND_BLOCK)->properties($commandBlockProperties));
+		$reg->mapModel(Model::create(Blocks::REPEATING_COMMAND_BLOCK(), Ids::REPEATING_COMMAND_BLOCK)->properties($commandBlockProperties));
 		$reg->mapModel(Model::create(Blocks::CHORUS_FLOWER(), Ids::CHORUS_FLOWER)->properties([
 			new IntProperty(StateNames::AGE, ChorusFlower::MIN_AGE, ChorusFlower::MAX_AGE, fn(ChorusFlower $b) => $b->getAge(), fn(ChorusFlower $b, int $v) => $b->setAge($v))
 		]));

@@ -81,9 +81,10 @@ final class TileFactory{
 		$this->register(GlowingItemFrame::class, ["GlowItemFrame"]);
 		$this->register(HangingSign::class, ["HangingSign", "minecraft:hanging_sign"]);
 
+		$this->register(CommandBlock::class, ["CommandBlock", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block"]);
+
 		//TODO: ChalkboardBlock
 		//TODO: ChemistryTable
-		//TODO: CommandBlock
 		//TODO: Conduit
 		//TODO: Dispenser
 		//TODO: Dropper

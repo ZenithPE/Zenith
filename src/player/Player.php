@@ -2925,4 +2925,8 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer, Nev
 			$this->stopSleep();
 		}
 	}
+
+	public function isOp() : bool{
+		return $this->getServer()->isOp($this->getName());
+	}
 }

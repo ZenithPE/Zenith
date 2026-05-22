@@ -172,6 +172,9 @@ final class VanillaBlocks{
 	private static WallSign $_mCHERRY_WALL_SIGN;
 	private static Wood $_mCHERRY_WOOD;
 	private static Chest $_mCHEST;
+	private static CommandBlock $_mCOMMAND_BLOCK;
+	private static CommandBlock $_mCHAIN_COMMAND_BLOCK;
+	private static CommandBlock $_mREPEATING_COMMAND_BLOCK;
 	private static ChiseledBookshelf $_mCHISELED_BOOKSHELF;
 	private static Copper $_mCHISELED_COPPER;
 	private static Opaque $_mCHISELED_DEEPSLATE;
@@ -1005,6 +1008,9 @@ final class VanillaBlocks{
 			"cherry_wall_sign" => fn(WallSign $v) => self::$_mCHERRY_WALL_SIGN = $v,
 			"cherry_wood" => fn(Wood $v) => self::$_mCHERRY_WOOD = $v,
 			"chest" => fn(Chest $v) => self::$_mCHEST = $v,
+			"command_block" => fn(CommandBlock $v) => self::$_mCOMMAND_BLOCK = $v,
+			"chain_command_block" => fn(CommandBlock $v) => self::$_mCHAIN_COMMAND_BLOCK = $v,
+			"repeating_command_block" => fn(CommandBlock $v) => self::$_mREPEATING_COMMAND_BLOCK = $v,
 			"chiseled_bookshelf" => fn(ChiseledBookshelf $v) => self::$_mCHISELED_BOOKSHELF = $v,
 			"chiseled_copper" => fn(Copper $v) => self::$_mCHISELED_COPPER = $v,
 			"chiseled_deepslate" => fn(Opaque $v) => self::$_mCHISELED_DEEPSLATE = $v,
@@ -2376,6 +2382,21 @@ final class VanillaBlocks{
 	public static function CHEST() : Chest{
 		if(!isset(self::$_mCHEST)){ self::init(); }
 		return clone self::$_mCHEST;
+	}
+
+	public static function COMMAND_BLOCK() : CommandBlock{
+		if(!isset(self::$_mCOMMAND_BLOCK)){ self::init(); }
+		return clone self::$_mCOMMAND_BLOCK;
+	}
+
+	public static function CHAIN_COMMAND_BLOCK() : CommandBlock{
+		if(!isset(self::$_mCHAIN_COMMAND_BLOCK)){ self::init(); }
+		return clone self::$_mCHAIN_COMMAND_BLOCK;
+	}
+
+	public static function REPEATING_COMMAND_BLOCK() : CommandBlock{
+		if(!isset(self::$_mREPEATING_COMMAND_BLOCK)){ self::init(); }
+		return clone self::$_mREPEATING_COMMAND_BLOCK;
 	}
 
 	public static function CHISELED_BOOKSHELF() : ChiseledBookshelf{

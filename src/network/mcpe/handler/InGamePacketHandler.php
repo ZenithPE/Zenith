@@ -24,7 +24,10 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\handler;
 
 use pocketmine\block\BaseSign;
+use pocketmine\block\CommandBlock;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\block\Lectern;
+use pocketmine\block\tile\CommandBlock as TileCommandBlock;
 use pocketmine\block\tile\Sign;
 use pocketmine\block\utils\SignText;
 use pocketmine\entity\Attribute;
@@ -60,6 +63,7 @@ use pocketmine\network\mcpe\protocol\InteractPacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ItemStackRequestPacket;
 use pocketmine\network\mcpe\protocol\ItemStackResponsePacket;
+use pocketmine\network\mcpe\protocol\CommandBlockUpdatePacket;
 use pocketmine\network\mcpe\protocol\LecternUpdatePacket;
 use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\network\mcpe\protocol\MobArmorEquipmentPacket;
@@ -998,6 +1002,50 @@ class InGamePacketHandler extends PacketHandler{
 		}
 
 		return false;
+	}
+
+	public function handleCommandBlockUpdate(CommandBlockUpdatePacket $packet) : bool{
+		if(!$this->player->isOp() || !$packet->isBlock){
+			return false;
+		}
+
+		$pos = $packet->blockPosition;
+		$world = $this->player->getWorld();
+		$chunkX = $pos->getX() >> Chunk::COORD_BIT_SIZE;
+		$chunkZ = $pos->getZ() >> Chunk::COORD_BIT_SIZE;
+		if(!$world->isChunkLoaded($chunkX, $chunkZ) || $world->isChunkLocked($chunkX, $chunkZ)){
+			return false;
+		}
+
+		$block = $world->getBlockAt($pos->getX(), $pos->getY(), $pos->getZ());
+		if(!$block instanceof CommandBlock || !$this->player->canInteract($block->getPosition(), 15)){
+			return false;
+		}
+
+		$tile = $world->getTile($block->getPosition());
+		if(!$tile instanceof TileCommandBlock){
+			return false;
+		}
+
+		$tile->setCustomName($packet->name);
+		$tile->setCommand($packet->command);
+		$tile->setLastOutput($packet->lastOutput);
+		$tile->setAuto(!$packet->isRedstoneMode);
+		$tile->setTrackOutput($packet->shouldTrackOutput);
+
+		$newBlock = match($packet->commandBlockMode){
+			1 => VanillaBlocks::REPEATING_COMMAND_BLOCK(),
+			2 => VanillaBlocks::CHAIN_COMMAND_BLOCK(),
+			default => VanillaBlocks::COMMAND_BLOCK()
+		};
+		$newBlock->setFacing($block->getFacing())->setConditional($packet->isConditional);
+		$world->setBlock($block->getPosition(), $newBlock);
+
+		if($tile->isAuto()){
+			$world->scheduleDelayedBlockUpdate($block->getPosition(), 1);
+		}
+
+		return true;
 	}
 
 	public function handleEmote(EmotePacket $packet) : bool{
