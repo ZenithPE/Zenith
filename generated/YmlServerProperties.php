@@ -95,6 +95,9 @@ final class YmlServerProperties{
 	public const PLAYER_SAVE_PLAYER_DATA = 'player.save-player-data';
 	public const PLAYER_VERIFY_XUID = 'player.verify-xuid';
 	public const PLUGINS = 'plugins';
+	public const PLUGINS_GRAYLIST = 'plugins.graylist';
+	public const PLUGINS_GRAYLIST_MODE = 'plugins.graylist.mode';
+	public const PLUGINS_GRAYLIST_PLUGINS = 'plugins.graylist.plugins';
 	public const PLUGINS_LEGACY_DATA_DIR = 'plugins.legacy-data-dir';
 	public const SETTINGS = 'settings';
 	public const SETTINGS_ASYNC_WORKERS = 'settings.async-workers';

@@ -205,3 +205,13 @@ plugins:
   #False will place plugin data under plugin_data under --data.
   #This option exists for backwards compatibility with existing installations.
   legacy-data-dir: false
+
+  graylist:
+    #Setting this allows you to control which plugins are loaded on your server.
+
+    #List behaviour
+    # - blacklist: Only plugins which ARE NOT listed will load.
+    # - whitelist: Only plugins which ARE listed will load.
+    mode: blacklist
+    #List names of plugins here.
+    plugins: [ ]
