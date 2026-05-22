@@ -39,6 +39,7 @@ final class VanillaArmorMaterials{
 	private static ArmorMaterial $_mCHAINMAIL;
 	private static ArmorMaterial $_mCOPPER;
 	private static ArmorMaterial $_mDIAMOND;
+	private static ArmorMaterial $_mELYTRA;
 	private static ArmorMaterial $_mGOLD;
 	private static ArmorMaterial $_mIRON;
 	private static ArmorMaterial $_mLEATHER;
@@ -81,6 +82,7 @@ final class VanillaArmorMaterials{
 			"chainmail" => fn(ArmorMaterial $v) => self::$_mCHAINMAIL = $v,
 			"copper" => fn(ArmorMaterial $v) => self::$_mCOPPER = $v,
 			"diamond" => fn(ArmorMaterial $v) => self::$_mDIAMOND = $v,
+			"elytra" => fn(ArmorMaterial $v) => self::$_mELYTRA = $v,
 			"gold" => fn(ArmorMaterial $v) => self::$_mGOLD = $v,
 			"iron" => fn(ArmorMaterial $v) => self::$_mIRON = $v,
 			"leather" => fn(ArmorMaterial $v) => self::$_mLEATHER = $v,
@@ -137,6 +139,11 @@ final class VanillaArmorMaterials{
 	public static function DIAMOND() : ArmorMaterial{
 		if(!isset(self::$_mDIAMOND)){ self::init(); }
 		return self::$_mDIAMOND;
+	}
+
+	public static function ELYTRA() : ArmorMaterial{
+		if(!isset(self::$_mELYTRA)){ self::init(); }
+		return self::$_mELYTRA;
 	}
 
 	public static function GOLD() : ArmorMaterial{

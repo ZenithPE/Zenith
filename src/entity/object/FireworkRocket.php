@@ -40,7 +40,9 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
 use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use pocketmine\player\Player;
 use pocketmine\utils\Utils;
 use pocketmine\world\sound\FireworkCrackleSound;
 use pocketmine\world\sound\FireworkLaunchSound;
@@ -55,6 +57,8 @@ class FireworkRocket extends Entity implements Explosive, NeverSavedWithChunkEnt
 
 	/** @var FireworkRocketExplosion[] */
 	protected array $explosions = [];
+
+	protected ?Player $attachedPlayer = null;
 
 	/**
 	 * @param FireworkRocketExplosion[] $explosions
@@ -74,6 +78,15 @@ class FireworkRocket extends Entity implements Explosive, NeverSavedWithChunkEnt
 	protected function getInitialDragMultiplier() : float{ return 0.0; }
 
 	protected function getInitialGravity() : float{ return 0.0; }
+
+	public function getAttachedPlayer() : ?Player{
+		return $this->attachedPlayer;
+	}
+
+	public function attachPlayer(Player $player) : void{
+		$this->attachedPlayer = $player;
+		$this->setOwningEntity($player);
+	}
 
 	/**
 	 * Returns the total number of ticks the firework will fly for before it explodes.
@@ -123,11 +136,17 @@ class FireworkRocket extends Entity implements Explosive, NeverSavedWithChunkEnt
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if(!$this->isFlaggedForDespawn()){
-			//Don't keep accelerating long-lived fireworks - this gets very rapidly out of control and makes the server
-			//die. Vanilla fireworks will only live for about 52 ticks maximum anyway, so this only makes sure plugin
-			//created fireworks don't murder the server
-			if($this->ticksLived < 60){
-				$this->addMotion($this->motion->x * 0.15, 0.04, $this->motion->z * 0.15);
+			if($this->attachedPlayer !== null){
+				if(!$this->attachedPlayer->isConnected() || !$this->attachedPlayer->isGliding()){
+					$this->flagForDespawn();
+					$this->explode();
+					return true;
+				}
+				$this->setPosition($this->attachedPlayer->getPosition());
+			}else{
+				if($this->ticksLived < 60){
+					$this->addMotion($this->motion->x * 0.15, 0.04, $this->motion->z * 0.15);
+				}
 			}
 
 			if($this->ticksLived >= $this->maxFlightTimeTicks){
@@ -167,6 +186,13 @@ class FireworkRocket extends Entity implements Explosive, NeverSavedWithChunkEnt
 				$height = $entity->getBoundingBox()->getYLength();
 				for($i = 0; $i < 2; $i++){
 					$target = $position->add(0, 0.5 * $i * $height, 0);
+					if($target->distanceSquared($this->location) < 0.0001){
+						//same point - assume no obstruction
+						$damage = $force * sqrt((5 - $position->distance($this->location)) / 5);
+						$ev = new EntityDamageByEntityEvent($this, $entity, EntityDamageEvent::CAUSE_ENTITY_EXPLOSION, $damage);
+						$entity->attack($ev);
+						break;
+					}
 					foreach(VoxelRayTrace::betweenPoints($this->location, $target) as $blockPos){
 						if($world->getBlock($blockPos)->calculateIntercept($this->location, $target) !== null){
 							continue 2; //obstruction, try another path
@@ -189,6 +215,8 @@ class FireworkRocket extends Entity implements Explosive, NeverSavedWithChunkEnt
 
 	protected function syncNetworkData(EntityMetadataCollection $properties) : void{
 		parent::syncNetworkData($properties);
+
+		$properties->setGenericFlag(EntityMetadataFlags::AFFECTED_BY_GRAVITY, $this->attachedPlayer === null);
 
 		$explosions = new ListTag();
 		foreach($this->explosions as $explosion){

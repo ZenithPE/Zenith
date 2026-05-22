@@ -59,5 +59,6 @@ final class VanillaArmorMaterialsInputs extends RegistrySource{
 		self::register("gold", new ArmorMaterial(25, new ArmorEquipGoldSound()));
 		self::register("diamond", new ArmorMaterial(10, new ArmorEquipDiamondSound()));
 		self::register("netherite", new ArmorMaterial(15, new ArmorEquipNetheriteSound()));
+		self::register("elytra", new ArmorMaterial(0, new ArmorEquipGenericSound()));
 	}
 }

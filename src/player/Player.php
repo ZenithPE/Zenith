@@ -99,6 +99,7 @@ use pocketmine\inventory\transaction\TransactionCancelledException;
 use pocketmine\inventory\transaction\TransactionValidationException;
 use pocketmine\item\ConsumableItem;
 use pocketmine\item\Durable;
+use pocketmine\item\Elytra;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\MeleeWeaponEnchantment;
 use pocketmine\item\Item;
@@ -2138,6 +2139,9 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer, Nev
 	public function toggleGlide(bool $glide) : bool{
 		if($glide === $this->gliding){
 			return true;
+		}
+		if($glide && !($this->armorInventory->getChestplate() instanceof Elytra)){
+			return false;
 		}
 		$ev = new PlayerToggleGlideEvent($this, $glide);
 		$ev->call();

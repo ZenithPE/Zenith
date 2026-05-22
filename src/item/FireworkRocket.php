@@ -92,6 +92,28 @@ class FireworkRocket extends Item{
 		return $this;
 	}
 
+	public function onClickAir(Player $player, Vector3 $directionVector, array &$returnedItems) : ItemUseResult{
+		if(!$player->isGliding()){
+			return ItemUseResult::NONE;
+		}
+
+		$randomDuration = (($this->flightTimeMultiplier + 1) * 10) + mt_rand(0, 12);
+
+		$entity = new FireworkEntity(
+			Location::fromObject($player->getPosition(), $player->getWorld(), $player->getLocation()->yaw, $player->getLocation()->pitch),
+			$randomDuration,
+			$this->explosions
+		);
+		$entity->attachPlayer($player);
+		$entity->spawnToAll();
+
+		$boost = $directionVector->normalize()->multiply(1.5);
+		$player->setMotion(new Vector3($boost->x, $boost->y + 0.1, $boost->z));
+
+		$this->pop();
+		return ItemUseResult::SUCCESS;
+	}
+
 	public function onInteractBlock(Player $player, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, array &$returnedItems) : ItemUseResult{
 		//TODO: this would be nicer if Vector3::getSide() accepted floats for distance
 		$position = $blockClicked->getPosition()->addVector($clickVector)->addVector(Vector3::zero()->getSide($face)->multiply(0.15));
