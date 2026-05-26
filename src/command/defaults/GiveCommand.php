@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\Command;
+use pocketmine\command\CommandParameter;
 use pocketmine\command\CommandSender;
-use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\item\LegacyStringToItemParser;
 use pocketmine\item\LegacyStringToItemParserException;
 use pocketmine\item\StringToItemParser;
@@ -34,10 +34,8 @@ use pocketmine\nbt\JsonNbtParser;
 use pocketmine\nbt\NbtDataException;
 use pocketmine\nbt\NbtException;
 use pocketmine\permission\DefaultPermissionNames;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
-use function array_slice;
-use function count;
-use function implode;
 
 class GiveCommand extends VanillaCommand{
 
@@ -49,51 +47,55 @@ class GiveCommand extends VanillaCommand{
 		);
 		$this->setPermissions([
 			DefaultPermissionNames::COMMAND_GIVE_SELF,
-			DefaultPermissionNames::COMMAND_GIVE_OTHER
+			DefaultPermissionNames::COMMAND_GIVE_OTHER,
 		]);
+
+		$this->setOverload("default",
+			CommandParameter::target("player"),
+			CommandParameter::item("itemName"),
+			CommandParameter::int("amount", optional: true, min: 1, max: 32767),
+			CommandParameter::text("tags", optional: true)
+		);
+		$this->enableParamTree();
 	}
 
-	public function execute(CommandSender $sender, string $commandLabel, array $args){
-		if(count($args) < 2){
-			throw new InvalidCommandSyntaxException();
+	protected function onRun(CommandSender $sender, string $aliasUsed, array $args, string $overload = "default") : void{
+		$player = $args["player"] ?? null;
+		if(!$player instanceof Player){
+			$sender->sendMessage(KnownTranslationFactory::pocketmine_command_error_playerNotFound("?")->prefix(TextFormat::RED));
+			return;
 		}
 
-		$player = $this->fetchPermittedPlayerTarget($sender, $args[0], DefaultPermissionNames::COMMAND_GIVE_SELF, DefaultPermissionNames::COMMAND_GIVE_OTHER);
-		if($player === null){
-			return true;
+		$permission = $player === $sender
+			? DefaultPermissionNames::COMMAND_GIVE_SELF
+			: DefaultPermissionNames::COMMAND_GIVE_OTHER;
+		if(!$this->testPermission($sender, $permission)){
+			return;
 		}
 
+		$itemName = (string) ($args["itemName"] ?? "");
 		try{
-			$item = StringToItemParser::getInstance()->parse($args[1]) ?? LegacyStringToItemParser::getInstance()->parse($args[1]);
-		}catch(LegacyStringToItemParserException $e){
-			$sender->sendMessage(KnownTranslationFactory::commands_give_item_notFound($args[1])->prefix(TextFormat::RED));
-			return true;
+			$item = StringToItemParser::getInstance()->parse($itemName) ?? LegacyStringToItemParser::getInstance()->parse($itemName);
+		}catch(LegacyStringToItemParserException){
+			$sender->sendMessage(KnownTranslationFactory::commands_give_item_notFound($itemName)->prefix(TextFormat::RED));
+			return;
 		}
 
-		if(!isset($args[2])){
-			$item->setCount($item->getMaxStackSize());
-		}else{
-			$count = $this->getBoundedInt($sender, $args[2], 1, 32767);
-			if($count === null){
-				return true;
-			}
-			$item->setCount($count);
-		}
+		$item->setCount(isset($args["amount"]) ? (int) $args["amount"] : $item->getMaxStackSize());
 
-		if(isset($args[3])){
-			$data = implode(" ", array_slice($args, 3));
+		if(isset($args["tags"])){
+			$rawTags = (string) $args["tags"];
 			try{
-				$tags = JsonNbtParser::parseJson($data);
+				$tags = JsonNbtParser::parseJson($rawTags);
 			}catch(NbtDataException $e){
 				$sender->sendMessage(KnownTranslationFactory::commands_give_tagError($e->getMessage()));
-				return true;
+				return;
 			}
-
 			try{
 				$item->setNamedTag($tags);
 			}catch(NbtException $e){
 				$sender->sendMessage(KnownTranslationFactory::commands_give_tagError($e->getMessage()));
-				return true;
+				return;
 			}
 		}
 
@@ -101,10 +103,9 @@ class GiveCommand extends VanillaCommand{
 		$player->getInventory()->addItem($item);
 
 		Command::broadcastCommandMessage($sender, KnownTranslationFactory::commands_give_success(
-			$item->getName() . " (" . $args[1] . ")",
+			$item->getName() . " (" . $itemName . ")",
 			(string) $item->getCount(),
 			$player->getName()
 		));
-		return true;
 	}
 }

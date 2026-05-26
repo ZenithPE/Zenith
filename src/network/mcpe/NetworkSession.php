@@ -90,6 +90,10 @@ use pocketmine\network\mcpe\protocol\TransferPacket;
 use pocketmine\network\mcpe\protocol\types\AbilitiesData;
 use pocketmine\network\mcpe\protocol\types\AbilitiesLayer;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
+use pocketmine\command\CommandEnum as GameCommandEnum;
+use pocketmine\command\CommandParameter as GameCommandParameter;
+use pocketmine\command\CommandParamType;
+use pocketmine\command\OverloadedCommand;
 use pocketmine\network\mcpe\protocol\types\command\CommandData;
 use pocketmine\network\mcpe\protocol\types\command\CommandHardEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandOverload;
@@ -1189,15 +1193,20 @@ class NetworkSession{
 			}
 
 			$description = $command->getDescription();
+
+			if($command instanceof OverloadedCommand){
+				$overloads = $this->buildProtocolOverloads($command);
+			}else{
+				$overloads = [new CommandOverload(chaining: false, parameters: [CommandParameter::standard("args", AvailableCommandsPacket::ARG_TYPE_RAWTEXT, 0, true)])];
+			}
+
 			$data = new CommandData(
-				$lname, //TODO: commands containing uppercase letters in the name crash 1.9.0 client
+				$lname,
 				$description instanceof Translatable ? $this->player->getLanguage()->translate($description) : $description,
 				0,
 				CommandPermissions::NORMAL,
 				$aliasObj,
-				[
-					new CommandOverload(chaining: false, parameters: [CommandParameter::standard("args", AvailableCommandsPacket::ARG_TYPE_RAWTEXT, 0, true)])
-				],
+				$overloads,
 				chainedSubCommandData: []
 			);
 
@@ -1205,6 +1214,73 @@ class NetworkSession{
 		}
 
 		$this->sendDataPacket(AvailableCommandsPacketAssembler::assemble(array_values($commandData), [], []));
+	}
+
+	/**
+	 * @return CommandOverload[]
+	 */
+	private function buildProtocolOverloads(OverloadedCommand $command) : array{
+		$overloads = [];
+
+		foreach($command->getSubCommands() as $sub){
+			if($this->player === null || !$sub->testPermissionSilent($this->player)){
+				continue;
+			}
+			$nameValues = array_values(array_unique([$sub->getName(), ...$sub->getAliases()]));
+			$subEnum = new CommandHardEnum(ucfirst($sub->getName()) . "SubCommand", $nameValues);
+			$params = [CommandParameter::enum($sub->getName(), $subEnum, CommandParameter::FLAG_FORCE_COLLAPSE_ENUM)];
+			foreach($sub->getParameters() as $param){
+				$params[] = $this->mapGameParameter($param);
+			}
+			$overloads[] = new CommandOverload(chaining: false, parameters: $params);
+		}
+
+		foreach($command->getCommandParameters() as $parameters){
+			$params = [];
+			foreach($parameters as $param){
+				$params[] = $this->mapGameParameter($param);
+			}
+			if(count($params) > 0){
+				$overloads[] = new CommandOverload(chaining: false, parameters: $params);
+			}
+		}
+
+		if(count($overloads) === 0){
+			$overloads[] = new CommandOverload(chaining: false, parameters: [CommandParameter::standard("args", AvailableCommandsPacket::ARG_TYPE_RAWTEXT, 0, true)]);
+		}
+
+		return $overloads;
+	}
+
+	private function mapGameParameter(GameCommandParameter $param) : CommandParameter{
+		return match($param->type){
+			CommandParamType::INT     => CommandParameter::standard($param->name, AvailableCommandsPacket::ARG_TYPE_INT, 0, $param->optional),
+			CommandParamType::FLOAT   => CommandParameter::standard($param->name, AvailableCommandsPacket::ARG_TYPE_FLOAT, 0, $param->optional),
+			CommandParamType::STRING  => CommandParameter::standard($param->name, AvailableCommandsPacket::ARG_TYPE_STRING, 0, $param->optional),
+			CommandParamType::TEXT    => CommandParameter::standard($param->name, AvailableCommandsPacket::ARG_TYPE_RAWTEXT, 0, $param->optional),
+			CommandParamType::TARGET  => CommandParameter::standard($param->name, AvailableCommandsPacket::ARG_TYPE_TARGET, 0, $param->optional),
+			CommandParamType::BOOLEAN => CommandParameter::enum(
+				$param->name,
+				new CommandHardEnum("Boolean", ["true", "false"]),
+				CommandParameter::FLAG_FORCE_COLLAPSE_ENUM,
+				$param->optional
+			),
+			CommandParamType::ENUM    => CommandParameter::enum(
+				$param->name,
+				new CommandHardEnum($param->enumData?->getName() ?? $param->name, $param->enumData?->getValues() ?? []),
+				CommandParameter::FLAG_FORCE_COLLAPSE_ENUM,
+				$param->optional
+			),
+			CommandParamType::ITEM    => CommandParameter::enum(
+				$param->name,
+				new CommandHardEnum("Item", array_map(
+					static fn($entry) => $entry->getStringId(),
+					TypeConverter::getInstance()->getItemTypeDictionary()->getEntries()
+				)),
+				CommandParameter::FLAG_FORCE_COLLAPSE_ENUM,
+				$param->optional
+			),
+		};
 	}
 
 	/**

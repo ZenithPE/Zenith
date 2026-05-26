@@ -24,12 +24,15 @@ declare(strict_types=1);
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\Command;
+use pocketmine\command\CommandEnum;
+use pocketmine\command\CommandParameter;
 use pocketmine\command\CommandSender;
+use pocketmine\command\OverloadedCommand;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\lang\KnownTranslationFactory;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\player\GameMode;
-use function count;
+use pocketmine\player\Player;
 
 class GamemodeCommand extends VanillaCommand{
 
@@ -41,43 +44,59 @@ class GamemodeCommand extends VanillaCommand{
 		);
 		$this->setPermissions([
 			DefaultPermissionNames::COMMAND_GAMEMODE_SELF,
-			DefaultPermissionNames::COMMAND_GAMEMODE_OTHER
+			DefaultPermissionNames::COMMAND_GAMEMODE_OTHER,
 		]);
+
+		$this->setOverload("default",
+			CommandParameter::int("gameMode"),
+			CommandParameter::target("player", optional: true)
+		);
+		$this->setOverload("byString",
+			CommandParameter::enum("gameMode", new CommandEnum("GameMode", ["survival", "creative", "adventure", "spectator"])),
+			CommandParameter::target("player", optional: true)
+		);
+		$this->enableParamTree();
 	}
 
-	public function execute(CommandSender $sender, string $commandLabel, array $args){
-		if(count($args) === 0){
-			throw new InvalidCommandSyntaxException();
-		}
-
-		$gameMode = GameMode::fromString($args[0]);
+	protected function onRun(CommandSender $sender, string $aliasUsed, array $args, string $overload = "default") : void{
+		$gameModeStr = (string) ($args["gameMode"] ?? "");
+		$gameMode = GameMode::fromString($gameModeStr);
 		if($gameMode === null){
-			$sender->sendMessage(KnownTranslationFactory::pocketmine_command_gamemode_unknown($args[0]));
-			return true;
+			$sender->sendMessage(KnownTranslationFactory::pocketmine_command_gamemode_unknown($gameModeStr));
+			return;
 		}
 
-		$target = $this->fetchPermittedPlayerTarget($sender, $args[1] ?? null, DefaultPermissionNames::COMMAND_GAMEMODE_SELF, DefaultPermissionNames::COMMAND_GAMEMODE_OTHER);
-		if($target === null){
-			return true;
+		if(isset($args["player"])){
+			$target = $args["player"];
+			if(!$target instanceof Player){
+				return;
+			}
+			if(!$this->testPermission($sender, DefaultPermissionNames::COMMAND_GAMEMODE_OTHER)){
+				return;
+			}
+		}else{
+			if(!$sender instanceof Player){
+				throw new InvalidCommandSyntaxException();
+			}
+			$target = $sender;
+			if(!$this->testPermission($sender, DefaultPermissionNames::COMMAND_GAMEMODE_SELF)){
+				return;
+			}
 		}
 
 		if($target->getGamemode() === $gameMode){
 			$sender->sendMessage(KnownTranslationFactory::pocketmine_command_gamemode_failure($target->getName()));
-			return true;
+			return;
 		}
 
 		$target->setGamemode($gameMode);
 		if($gameMode !== $target->getGamemode()){
 			$sender->sendMessage(KnownTranslationFactory::pocketmine_command_gamemode_failure($target->getName()));
+		}elseif($target === $sender){
+			Command::broadcastCommandMessage($sender, KnownTranslationFactory::commands_gamemode_success_self($gameMode->getTranslatableName()));
 		}else{
-			if($target === $sender){
-				Command::broadcastCommandMessage($sender, KnownTranslationFactory::commands_gamemode_success_self($gameMode->getTranslatableName()));
-			}else{
-				$target->sendMessage(KnownTranslationFactory::gameMode_changed($gameMode->getTranslatableName()));
-				Command::broadcastCommandMessage($sender, KnownTranslationFactory::commands_gamemode_success_other($gameMode->getTranslatableName(), $target->getName()));
-			}
+			$target->sendMessage(KnownTranslationFactory::gameMode_changed($gameMode->getTranslatableName()));
+			Command::broadcastCommandMessage($sender, KnownTranslationFactory::commands_gamemode_success_other($gameMode->getTranslatableName(), $target->getName()));
 		}
-
-		return true;
 	}
 }

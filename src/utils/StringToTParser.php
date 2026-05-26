@@ -90,7 +90,10 @@ abstract class StringToTParser{
 		return strtolower(str_replace([" ", "minecraft:"], ["_", ""], trim($input)));
 	}
 
-	/** @return string[]|int[] */
+	/**
+	 * @return string[]
+	 * @phpstan-return list<string>
+	 */
 	public function getKnownAliases() : array{
 		return array_keys($this->callbackMap);
 	}

@@ -25,6 +25,7 @@ namespace pocketmine\command\defaults;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\command\OverloadedCommand;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\lang\KnownTranslationFactory;
 use pocketmine\player\Player;
@@ -32,7 +33,7 @@ use pocketmine\utils\TextFormat;
 use function is_numeric;
 use function substr;
 
-abstract class VanillaCommand extends Command{
+abstract class VanillaCommand extends OverloadedCommand{
 	public const MAX_COORD = 30000000;
 	public const MIN_COORD = -30000000;
 
