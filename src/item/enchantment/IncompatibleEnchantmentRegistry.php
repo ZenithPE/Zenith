@@ -50,6 +50,7 @@ final class IncompatibleEnchantmentRegistry{
 		$this->register(Groups::BOW_INFINITE, [Enchantments::INFINITY(), Enchantments::MENDING()]);
 		$this->register(Groups::BLOCK_DROPS, [Enchantments::FORTUNE(), Enchantments::SILK_TOUCH()]);
 		$this->register(Groups::HEAVY_WEAPON_DAMAGE, [Enchantments::DENSITY(), Enchantments::BREACH()]);
+		$this->register(Groups::CROSSBOW_PROJECTILE, [Enchantments::MULTISHOT(), Enchantments::PIERCING()]);
 	}
 
 	/**

@@ -43,6 +43,7 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
 use pocketmine\player\Player;
 use pocketmine\world\sound\ArrowHitSound;
 use function ceil;
+use function count;
 use function mt_rand;
 use function sqrt;
 
@@ -54,6 +55,11 @@ class Arrow extends Projectile{
 	public const PICKUP_ANY = 1;
 	public const PICKUP_CREATIVE = 2;
 
+	/**
+	 * Speed kept by a piercing arrow after going through an entity.
+	 */
+	private const PIERCING_SPEED_MULTIPLIER = 0.99;
+
 	private const TAG_PICKUP = "pickup"; //TAG_Byte
 	public const TAG_CRIT = "crit"; //TAG_Byte
 	private const TAG_LIFE = "life"; //TAG_Short
@@ -63,6 +69,15 @@ class Arrow extends Projectile{
 	protected float $punchKnockback = 0.0;
 	protected int $collideTicks = 0;
 	protected bool $critical = false;
+	protected int $piercing = 0;
+
+	/**
+	 * Entities the arrow already went through, so that it doesn't damage them again on the next tick.
+	 *
+	 * @var true[]
+	 * @phpstan-var array<int, true>
+	 */
+	protected array $piercedEntities = [];
 
 	public function __construct(Location $location, ?Entity $shootingEntity, bool $critical, ?CompoundTag $nbt = null){
 		parent::__construct($location, $shootingEntity, $nbt);
@@ -147,8 +162,38 @@ class Arrow extends Projectile{
 		$this->broadcastAnimation(new ArrowShakeAnimation($this, 7));
 	}
 
+	/**
+	 * Returns how many entities the arrow can go through before stopping.
+	 */
+	public function getPiercing() : int{
+		return $this->piercing;
+	}
+
+	public function setPiercing(int $piercing) : void{
+		if($piercing < 0){
+			throw new \InvalidArgumentException("Piercing must not be negative");
+		}
+		$this->piercing = $piercing;
+	}
+
+	public function canCollideWith(Entity $entity) : bool{
+		return !isset($this->piercedEntities[$entity->getId()]) && parent::canCollideWith($entity);
+	}
+
+	protected function despawnsOnEntityHit() : bool{
+		return count($this->piercedEntities) > $this->piercing;
+	}
+
 	protected function onHitEntity(Entity $entityHit, RayTraceResult $hitResult) : void{
+		$this->piercedEntities[$entityHit->getId()] = true;
+
 		parent::onHitEntity($entityHit, $hitResult);
+
+		if(!$this->isFlaggedForDespawn()){
+			//without this the projectile code would zero the motion, stopping the arrow inside the entity it just went through
+			$this->motion = $this->motion->multiply(self::PIERCING_SPEED_MULTIPLIER);
+		}
+
 		if($this->punchKnockback > 0){
 			$horizontalSpeed = sqrt($this->motion->x ** 2 + $this->motion->z ** 2);
 			if($horizontalSpeed > 0){

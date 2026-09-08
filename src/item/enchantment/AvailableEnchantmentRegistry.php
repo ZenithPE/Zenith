@@ -76,6 +76,9 @@ final class AvailableEnchantmentRegistry{
 			[Tags::ARMOR, Tags::WEAPONS, Tags::FISHING_ROD],
 			[Tags::SHEARS, Tags::FLINT_AND_STEEL, Tags::SHIELD, Tags::CARROT_ON_STICK, Tags::ELYTRA, Tags::BRUSH]
 		);
+		$this->register(Enchantments::MULTISHOT(), [Tags::CROSSBOW], []);
+		$this->register(Enchantments::PIERCING(), [Tags::CROSSBOW], []);
+		$this->register(Enchantments::QUICK_CHARGE(), [Tags::CROSSBOW], []);
 		$this->register(Enchantments::POWER(), [Tags::BOW], []);
 		$this->register(Enchantments::PUNCH(), [Tags::BOW], []);
 		$this->register(Enchantments::FLAME(), [Tags::BOW], []);

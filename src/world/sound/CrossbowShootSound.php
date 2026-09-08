@@ -23,16 +23,15 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\item\enchantment;
+namespace pocketmine\world\sound;
 
-/**
- * Constants for groupings of incompatible enchantments.
- * Enchantments belonging to the same incompatibility group cannot be applied side-by-side on the same item.
- */
-final class IncompatibleEnchantmentGroups{
-	public const PROTECTION = "protection";
-	public const BOW_INFINITE = "bow_infinite";
-	public const BLOCK_DROPS = "block_drops";
-	public const HEAVY_WEAPON_DAMAGE = "heavy_weapon_damage";
-	public const CROSSBOW_PROJECTILE = "crossbow_projectile";
+use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
+
+class CrossbowShootSound implements Sound{
+
+	public function encode(Vector3 $pos) : array{
+		return [LevelSoundEventPacket::nonActorSound(LevelSoundEvent::CROSSBOW_SHOOT, $pos, false)];
+	}
 }
