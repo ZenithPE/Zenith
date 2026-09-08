@@ -118,6 +118,7 @@ final class VanillaItems{
 	private static Item $_mCHEMICAL_SULPHATE;
 	private static Item $_mCHEMICAL_TUNGSTEN_CHLORIDE;
 	private static Item $_mCHEMICAL_WATER;
+	private static Boat $_mCHERRY_BOAT;
 	private static HangingSign $_mCHERRY_HANGING_SIGN;
 	private static ItemBlockWallOrFloor $_mCHERRY_SIGN;
 	private static ChorusFruit $_mCHORUS_FRUIT;
@@ -279,6 +280,7 @@ final class VanillaItems{
 	private static ItemBlockWallOrFloor $_mOAK_SIGN;
 	private static ItemBlockWallOrFloor $_mOMINOUS_BANNER;
 	private static PaintingItem $_mPAINTING;
+	private static Boat $_mPALE_OAK_BOAT;
 	private static HangingSign $_mPALE_OAK_HANGING_SIGN;
 	private static ItemBlockWallOrFloor $_mPALE_OAK_SIGN;
 	private static Item $_mPAPER;
@@ -505,6 +507,7 @@ final class VanillaItems{
 			"chemical_sulphate" => fn(Item $v) => self::$_mCHEMICAL_SULPHATE = $v,
 			"chemical_tungsten_chloride" => fn(Item $v) => self::$_mCHEMICAL_TUNGSTEN_CHLORIDE = $v,
 			"chemical_water" => fn(Item $v) => self::$_mCHEMICAL_WATER = $v,
+			"cherry_boat" => fn(Boat $v) => self::$_mCHERRY_BOAT = $v,
 			"cherry_hanging_sign" => fn(HangingSign $v) => self::$_mCHERRY_HANGING_SIGN = $v,
 			"cherry_sign" => fn(ItemBlockWallOrFloor $v) => self::$_mCHERRY_SIGN = $v,
 			"chorus_fruit" => fn(ChorusFruit $v) => self::$_mCHORUS_FRUIT = $v,
@@ -666,6 +669,7 @@ final class VanillaItems{
 			"oak_sign" => fn(ItemBlockWallOrFloor $v) => self::$_mOAK_SIGN = $v,
 			"ominous_banner" => fn(ItemBlockWallOrFloor $v) => self::$_mOMINOUS_BANNER = $v,
 			"painting" => fn(PaintingItem $v) => self::$_mPAINTING = $v,
+			"pale_oak_boat" => fn(Boat $v) => self::$_mPALE_OAK_BOAT = $v,
 			"pale_oak_hanging_sign" => fn(HangingSign $v) => self::$_mPALE_OAK_HANGING_SIGN = $v,
 			"pale_oak_sign" => fn(ItemBlockWallOrFloor $v) => self::$_mPALE_OAK_SIGN = $v,
 			"paper" => fn(Item $v) => self::$_mPAPER = $v,
@@ -1206,6 +1210,11 @@ final class VanillaItems{
 	public static function CHEMICAL_WATER() : Item{
 		if(!isset(self::$_mCHEMICAL_WATER)){ self::init(); }
 		return clone self::$_mCHEMICAL_WATER;
+	}
+
+	public static function CHERRY_BOAT() : Boat{
+		if(!isset(self::$_mCHERRY_BOAT)){ self::init(); }
+		return clone self::$_mCHERRY_BOAT;
 	}
 
 	public static function CHERRY_HANGING_SIGN() : HangingSign{
@@ -2011,6 +2020,11 @@ final class VanillaItems{
 	public static function PAINTING() : PaintingItem{
 		if(!isset(self::$_mPAINTING)){ self::init(); }
 		return clone self::$_mPAINTING;
+	}
+
+	public static function PALE_OAK_BOAT() : Boat{
+		if(!isset(self::$_mPALE_OAK_BOAT)){ self::init(); }
+		return clone self::$_mPALE_OAK_BOAT;
 	}
 
 	public static function PALE_OAK_HANGING_SIGN() : HangingSign{

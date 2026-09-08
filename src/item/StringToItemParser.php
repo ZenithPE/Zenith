@@ -429,6 +429,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("double_wooden_slabs", fn() => Blocks::OAK_SLAB()->setSlabType(SlabType::DOUBLE));
 		$result->registerBlock("dragon_egg", fn() => Blocks::DRAGON_EGG());
 		$result->registerBlock("dragon_head", fn() => Blocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON));
+		$result->registerBlock("dried_ghast", fn() => Blocks::DRIED_GHAST());
 		$result->registerBlock("dried_kelp_block", fn() => Blocks::DRIED_KELP());
 		$result->registerBlock("dripstone_block", fn() => Blocks::DRIPSTONE_BLOCK());
 		$result->registerBlock("dyed_shulker_box", fn() => Blocks::DYED_SHULKER_BOX());
@@ -1436,6 +1437,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("copper_sword", fn() => Items::COPPER_SWORD());
 		$result->register("creeper_banner_pattern", fn() => Items::CREEPER_BANNER_PATTERN());
 		$result->register("crimson_hanging_sign", fn() => Items::CRIMSON_HANGING_SIGN());
+		$result->register("cherry_boat", fn() => Items::CHERRY_BOAT());
 		$result->register("dark_oak_boat", fn() => Items::DARK_OAK_BOAT());
 		$result->register("dark_oak_hanging_sign", fn() => Items::DARK_OAK_HANGING_SIGN());
 		$result->register("diamond", fn() => Items::DIAMOND());
@@ -1544,6 +1546,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("leather_tunic", fn() => Items::LEATHER_TUNIC());
 		$result->register("mace", fn() => Items::MACE());
 		$result->register("magma_cream", fn() => Items::MAGMA_CREAM());
+		$result->register("mangrove_boat", fn() => Items::MANGROVE_BOAT());
 		$result->register("mangrove_hanging_sign", fn() => Items::MANGROVE_HANGING_SIGN());
 		$result->register("melon", fn() => Items::MELON());
 		$result->register("melon_seeds", fn() => Items::MELON_SEEDS());
@@ -1658,6 +1661,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("spider_eye", fn() => Items::SPIDER_EYE());
 		$result->register("spire_armor_trim_smithing_template", fn() => Items::SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE());
 		$result->register("splash_potion", fn() => Items::SPLASH_POTION());
+		$result->register("pale_oak_boat", fn() => Items::PALE_OAK_BOAT());
 		$result->register("spruce_boat", fn() => Items::SPRUCE_BOAT());
 		$result->register("spruce_hanging_sign", fn() => Items::SPRUCE_HANGING_SIGN());
 		$result->register("spyglass", fn() => Items::SPYGLASS());

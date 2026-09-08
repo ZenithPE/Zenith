@@ -245,6 +245,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::CREEPER_BANNER_PATTERN, Items::CREEPER_BANNER_PATTERN());
 		$this->map1to1Item(Ids::CRIMSON_HANGING_SIGN, Items::CRIMSON_HANGING_SIGN());
 		$this->map1to1Item(Ids::CRIMSON_SIGN, Items::CRIMSON_SIGN());
+		$this->map1to1Item(Ids::CHERRY_BOAT, Items::CHERRY_BOAT());
 		$this->map1to1Item(Ids::DARK_OAK_BOAT, Items::DARK_OAK_BOAT());
 		$this->map1to1Item(Ids::DARK_OAK_HANGING_SIGN, Items::DARK_OAK_HANGING_SIGN());
 		$this->map1to1Item(Ids::DARK_OAK_SIGN, Items::DARK_OAK_SIGN());
@@ -432,6 +433,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::SNOWBALL, Items::SNOWBALL());
 		$this->map1to1Item(Ids::SPIDER_EYE, Items::SPIDER_EYE());
 		$this->map1to1Item(Ids::SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, Items::SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE());
+		$this->map1to1Item(Ids::PALE_OAK_BOAT, Items::PALE_OAK_BOAT());
 		$this->map1to1Item(Ids::SPRUCE_BOAT, Items::SPRUCE_BOAT());
 		$this->map1to1Item(Ids::SPRUCE_HANGING_SIGN, Items::SPRUCE_HANGING_SIGN());
 		$this->map1to1Item(Ids::SPRUCE_SIGN, Items::SPRUCE_SIGN());

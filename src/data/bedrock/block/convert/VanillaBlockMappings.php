@@ -54,6 +54,7 @@ use pocketmine\block\DoublePitcherCrop;
 use pocketmine\block\DoublePlant;
 use pocketmine\block\EndPortalFrame;
 use pocketmine\block\EndRod;
+use pocketmine\block\DriedGhast;
 use pocketmine\block\Farmland;
 use pocketmine\block\FillableCauldron;
 use pocketmine\block\Fire;
@@ -1402,6 +1403,10 @@ final class VanillaBlockMappings{
 			$commonProperties->horizontalFacingSWNE
 		]));
 		$reg->mapModel(Model::create(Blocks::DEEPSLATE(), Ids::DEEPSLATE)->properties([$commonProperties->pillarAxis]));
+		$reg->mapModel(Model::create(Blocks::DRIED_GHAST(), Ids::DRIED_GHAST)->properties([
+			$commonProperties->horizontalFacingCardinal,
+			new IntProperty(StateNames::REHYDRATION_LEVEL, 0, DriedGhast::MAX_REHYDRATION_LEVEL, fn(DriedGhast $b) => $b->getRehydrationLevel(), fn(DriedGhast $b, int $v) => $b->setRehydrationLevel($v))
+		]));
 		$reg->mapModel(Model::create(Blocks::DETECTOR_RAIL(), Ids::DETECTOR_RAIL)->properties([
 			new BoolProperty(StateNames::RAIL_DATA_BIT, fn(DetectorRail $b) => $b->isActivated(), fn(DetectorRail $b, bool $v) => $b->setActivated($v)),
 			new IntProperty(StateNames::RAIL_DIRECTION, 0, 5, fn(StraightOnlyRail $b) => $b->getShape(), fn(StraightOnlyRail $b, int $v) => $b->setShape($v)) //TODO: shared with ActivatorRail

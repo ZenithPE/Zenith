@@ -902,8 +902,9 @@ final class BlockTypeIds{
 	public const FIREFLY_BUSH = 10869;
 	public const SHORT_DRY_GRASS = 10870;
 	public const TALL_DRY_GRASS = 10871;
+	public const DRIED_GHAST = 10872;
 
-	public const FIRST_UNUSED_BLOCK_ID = 10872;
+	public const FIRST_UNUSED_BLOCK_ID = 10873;
 
 	private static int $nextDynamicId = self::FIRST_UNUSED_BLOCK_ID;
 
