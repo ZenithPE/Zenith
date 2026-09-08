@@ -528,6 +528,7 @@ final class VanillaBlocks{
 	private static WallHangingSign $_mJUNGLE_WALL_HANGING_SIGN;
 	private static WallSign $_mJUNGLE_WALL_SIGN;
 	private static Wood $_mJUNGLE_WOOD;
+	private static Kelp $_mKELP;
 	private static ChemistryTable $_mLAB_TABLE;
 	private static Ladder $_mLADDER;
 	private static Lantern $_mLANTERN;
@@ -1400,6 +1401,7 @@ final class VanillaBlocks{
 			"jungle_wall_hanging_sign" => fn(WallHangingSign $v) => self::$_mJUNGLE_WALL_HANGING_SIGN = $v,
 			"jungle_wall_sign" => fn(WallSign $v) => self::$_mJUNGLE_WALL_SIGN = $v,
 			"jungle_wood" => fn(Wood $v) => self::$_mJUNGLE_WOOD = $v,
+			"kelp" => fn(Kelp $v) => self::$_mKELP = $v,
 			"lab_table" => fn(ChemistryTable $v) => self::$_mLAB_TABLE = $v,
 			"ladder" => fn(Ladder $v) => self::$_mLADDER = $v,
 			"lantern" => fn(Lantern $v) => self::$_mLANTERN = $v,
@@ -4226,6 +4228,11 @@ final class VanillaBlocks{
 	public static function JUNGLE_WOOD() : Wood{
 		if(!isset(self::$_mJUNGLE_WOOD)){ self::init(); }
 		return clone self::$_mJUNGLE_WOOD;
+	}
+
+	public static function KELP() : Kelp{
+		if(!isset(self::$_mKELP)){ self::init(); }
+		return clone self::$_mKELP;
 	}
 
 	public static function LAB_TABLE() : ChemistryTable{
