@@ -382,8 +382,18 @@ final class ItemTypeIds{
 	public const MACE = 20341;
 	public const ARMADILLO_SCUTE = 20342;
 	public const BREEZE_ROD = 20343;
+	public const BORDURE_INDENTED_BANNER_PATTERN = 20344;
+	public const CREEPER_BANNER_PATTERN = 20345;
+	public const FIELD_MASONED_BANNER_PATTERN = 20346;
+	public const FLOW_BANNER_PATTERN = 20347;
+	public const FLOWER_BANNER_PATTERN = 20348;
+	public const GLOBE_BANNER_PATTERN = 20349;
+	public const GUSTER_BANNER_PATTERN = 20350;
+	public const MOJANG_BANNER_PATTERN = 20351;
+	public const PIGLIN_BANNER_PATTERN = 20352;
+	public const SKULL_BANNER_PATTERN = 20353;
 
-	public const FIRST_UNUSED_ITEM_ID = 20344;
+	public const FIRST_UNUSED_ITEM_ID = 20354;
 
 	private static int $nextDynamicId = self::FIRST_UNUSED_ITEM_ID;
 

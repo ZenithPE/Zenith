@@ -67,6 +67,7 @@ final class VanillaItems{
 	private static Item $_mBONE;
 	private static Fertilizer $_mBONE_MEAL;
 	private static Book $_mBOOK;
+	private static BannerPattern $_mBORDURE_INDENTED_BANNER_PATTERN;
 	private static Bow $_mBOW;
 	private static Bowl $_mBOWL;
 	private static Bread $_mBREAD;
@@ -147,6 +148,7 @@ final class VanillaItems{
 	private static Spear $_mCOPPER_SPEAR;
 	private static Sword $_mCOPPER_SWORD;
 	private static CoralFan $_mCORAL_FAN;
+	private static BannerPattern $_mCREEPER_BANNER_PATTERN;
 	private static HangingSign $_mCRIMSON_HANGING_SIGN;
 	private static ItemBlockWallOrFloor $_mCRIMSON_SIGN;
 	private static Boat $_mDARK_OAK_BOAT;
@@ -180,15 +182,19 @@ final class VanillaItems{
 	private static Item $_mEYE_ARMOR_TRIM_SMITHING_TEMPLATE;
 	private static Item $_mFEATHER;
 	private static Item $_mFERMENTED_SPIDER_EYE;
+	private static BannerPattern $_mFIELD_MASONED_BANNER_PATTERN;
 	private static FireworkRocket $_mFIREWORK_ROCKET;
 	private static FireworkStar $_mFIREWORK_STAR;
 	private static FireCharge $_mFIRE_CHARGE;
 	private static FishingRod $_mFISHING_ROD;
 	private static Item $_mFLINT;
 	private static FlintSteel $_mFLINT_AND_STEEL;
+	private static BannerPattern $_mFLOWER_BANNER_PATTERN;
+	private static BannerPattern $_mFLOW_BANNER_PATTERN;
 	private static Item $_mGHAST_TEAR;
 	private static GlassBottle $_mGLASS_BOTTLE;
 	private static Item $_mGLISTERING_MELON;
+	private static BannerPattern $_mGLOBE_BANNER_PATTERN;
 	private static Item $_mGLOWSTONE_DUST;
 	private static GlowBerries $_mGLOW_BERRIES;
 	private static Item $_mGLOW_INK_SAC;
@@ -208,6 +214,7 @@ final class VanillaItems{
 	private static Item $_mGOLD_INGOT;
 	private static Item $_mGOLD_NUGGET;
 	private static Item $_mGUNPOWDER;
+	private static BannerPattern $_mGUSTER_BANNER_PATTERN;
 	private static Item $_mHEART_OF_THE_SEA;
 	private static Item $_mHONEYCOMB;
 	private static HoneyBottle $_mHONEY_BOTTLE;
@@ -247,6 +254,7 @@ final class VanillaItems{
 	private static MelonSeeds $_mMELON_SEEDS;
 	private static MilkBucket $_mMILK_BUCKET;
 	private static Minecart $_mMINECART;
+	private static BannerPattern $_mMOJANG_BANNER_PATTERN;
 	private static MushroomStew $_mMUSHROOM_STEW;
 	private static NameTag $_mNAME_TAG;
 	private static Item $_mNAUTILUS_SHELL;
@@ -275,6 +283,7 @@ final class VanillaItems{
 	private static ItemBlockWallOrFloor $_mPALE_OAK_SIGN;
 	private static Item $_mPAPER;
 	private static Item $_mPHANTOM_MEMBRANE;
+	private static BannerPattern $_mPIGLIN_BANNER_PATTERN;
 	private static PitcherPod $_mPITCHER_POD;
 	private static PoisonousPotato $_mPOISONOUS_POTATO;
 	private static Item $_mPOPPED_CHORUS_FRUIT;
@@ -333,6 +342,7 @@ final class VanillaItems{
 	private static Shield $_mSHIELD;
 	private static Item $_mSHULKER_SHELL;
 	private static Item $_mSILENCE_ARMOR_TRIM_SMITHING_TEMPLATE;
+	private static BannerPattern $_mSKULL_BANNER_PATTERN;
 	private static Item $_mSLIMEBALL;
 	private static Item $_mSNOUT_ARMOR_TRIM_SMITHING_TEMPLATE;
 	private static Snowball $_mSNOWBALL;
@@ -443,6 +453,7 @@ final class VanillaItems{
 			"bone" => fn(Item $v) => self::$_mBONE = $v,
 			"bone_meal" => fn(Fertilizer $v) => self::$_mBONE_MEAL = $v,
 			"book" => fn(Book $v) => self::$_mBOOK = $v,
+			"bordure_indented_banner_pattern" => fn(BannerPattern $v) => self::$_mBORDURE_INDENTED_BANNER_PATTERN = $v,
 			"bow" => fn(Bow $v) => self::$_mBOW = $v,
 			"bowl" => fn(Bowl $v) => self::$_mBOWL = $v,
 			"bread" => fn(Bread $v) => self::$_mBREAD = $v,
@@ -523,6 +534,7 @@ final class VanillaItems{
 			"copper_spear" => fn(Spear $v) => self::$_mCOPPER_SPEAR = $v,
 			"copper_sword" => fn(Sword $v) => self::$_mCOPPER_SWORD = $v,
 			"coral_fan" => fn(CoralFan $v) => self::$_mCORAL_FAN = $v,
+			"creeper_banner_pattern" => fn(BannerPattern $v) => self::$_mCREEPER_BANNER_PATTERN = $v,
 			"crimson_hanging_sign" => fn(HangingSign $v) => self::$_mCRIMSON_HANGING_SIGN = $v,
 			"crimson_sign" => fn(ItemBlockWallOrFloor $v) => self::$_mCRIMSON_SIGN = $v,
 			"dark_oak_boat" => fn(Boat $v) => self::$_mDARK_OAK_BOAT = $v,
@@ -556,15 +568,19 @@ final class VanillaItems{
 			"eye_armor_trim_smithing_template" => fn(Item $v) => self::$_mEYE_ARMOR_TRIM_SMITHING_TEMPLATE = $v,
 			"feather" => fn(Item $v) => self::$_mFEATHER = $v,
 			"fermented_spider_eye" => fn(Item $v) => self::$_mFERMENTED_SPIDER_EYE = $v,
+			"field_masoned_banner_pattern" => fn(BannerPattern $v) => self::$_mFIELD_MASONED_BANNER_PATTERN = $v,
 			"firework_rocket" => fn(FireworkRocket $v) => self::$_mFIREWORK_ROCKET = $v,
 			"firework_star" => fn(FireworkStar $v) => self::$_mFIREWORK_STAR = $v,
 			"fire_charge" => fn(FireCharge $v) => self::$_mFIRE_CHARGE = $v,
 			"fishing_rod" => fn(FishingRod $v) => self::$_mFISHING_ROD = $v,
 			"flint" => fn(Item $v) => self::$_mFLINT = $v,
 			"flint_and_steel" => fn(FlintSteel $v) => self::$_mFLINT_AND_STEEL = $v,
+			"flower_banner_pattern" => fn(BannerPattern $v) => self::$_mFLOWER_BANNER_PATTERN = $v,
+			"flow_banner_pattern" => fn(BannerPattern $v) => self::$_mFLOW_BANNER_PATTERN = $v,
 			"ghast_tear" => fn(Item $v) => self::$_mGHAST_TEAR = $v,
 			"glass_bottle" => fn(GlassBottle $v) => self::$_mGLASS_BOTTLE = $v,
 			"glistering_melon" => fn(Item $v) => self::$_mGLISTERING_MELON = $v,
+			"globe_banner_pattern" => fn(BannerPattern $v) => self::$_mGLOBE_BANNER_PATTERN = $v,
 			"glowstone_dust" => fn(Item $v) => self::$_mGLOWSTONE_DUST = $v,
 			"glow_berries" => fn(GlowBerries $v) => self::$_mGLOW_BERRIES = $v,
 			"glow_ink_sac" => fn(Item $v) => self::$_mGLOW_INK_SAC = $v,
@@ -584,6 +600,7 @@ final class VanillaItems{
 			"gold_ingot" => fn(Item $v) => self::$_mGOLD_INGOT = $v,
 			"gold_nugget" => fn(Item $v) => self::$_mGOLD_NUGGET = $v,
 			"gunpowder" => fn(Item $v) => self::$_mGUNPOWDER = $v,
+			"guster_banner_pattern" => fn(BannerPattern $v) => self::$_mGUSTER_BANNER_PATTERN = $v,
 			"heart_of_the_sea" => fn(Item $v) => self::$_mHEART_OF_THE_SEA = $v,
 			"honeycomb" => fn(Item $v) => self::$_mHONEYCOMB = $v,
 			"honey_bottle" => fn(HoneyBottle $v) => self::$_mHONEY_BOTTLE = $v,
@@ -623,6 +640,7 @@ final class VanillaItems{
 			"melon_seeds" => fn(MelonSeeds $v) => self::$_mMELON_SEEDS = $v,
 			"milk_bucket" => fn(MilkBucket $v) => self::$_mMILK_BUCKET = $v,
 			"minecart" => fn(Minecart $v) => self::$_mMINECART = $v,
+			"mojang_banner_pattern" => fn(BannerPattern $v) => self::$_mMOJANG_BANNER_PATTERN = $v,
 			"mushroom_stew" => fn(MushroomStew $v) => self::$_mMUSHROOM_STEW = $v,
 			"name_tag" => fn(NameTag $v) => self::$_mNAME_TAG = $v,
 			"nautilus_shell" => fn(Item $v) => self::$_mNAUTILUS_SHELL = $v,
@@ -651,6 +669,7 @@ final class VanillaItems{
 			"pale_oak_sign" => fn(ItemBlockWallOrFloor $v) => self::$_mPALE_OAK_SIGN = $v,
 			"paper" => fn(Item $v) => self::$_mPAPER = $v,
 			"phantom_membrane" => fn(Item $v) => self::$_mPHANTOM_MEMBRANE = $v,
+			"piglin_banner_pattern" => fn(BannerPattern $v) => self::$_mPIGLIN_BANNER_PATTERN = $v,
 			"pitcher_pod" => fn(PitcherPod $v) => self::$_mPITCHER_POD = $v,
 			"poisonous_potato" => fn(PoisonousPotato $v) => self::$_mPOISONOUS_POTATO = $v,
 			"popped_chorus_fruit" => fn(Item $v) => self::$_mPOPPED_CHORUS_FRUIT = $v,
@@ -709,6 +728,7 @@ final class VanillaItems{
 			"shield" => fn(Shield $v) => self::$_mSHIELD = $v,
 			"shulker_shell" => fn(Item $v) => self::$_mSHULKER_SHELL = $v,
 			"silence_armor_trim_smithing_template" => fn(Item $v) => self::$_mSILENCE_ARMOR_TRIM_SMITHING_TEMPLATE = $v,
+			"skull_banner_pattern" => fn(BannerPattern $v) => self::$_mSKULL_BANNER_PATTERN = $v,
 			"slimeball" => fn(Item $v) => self::$_mSLIMEBALL = $v,
 			"snout_armor_trim_smithing_template" => fn(Item $v) => self::$_mSNOUT_ARMOR_TRIM_SMITHING_TEMPLATE = $v,
 			"snowball" => fn(Snowball $v) => self::$_mSNOWBALL = $v,
@@ -929,6 +949,11 @@ final class VanillaItems{
 	public static function BOOK() : Book{
 		if(!isset(self::$_mBOOK)){ self::init(); }
 		return clone self::$_mBOOK;
+	}
+
+	public static function BORDURE_INDENTED_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mBORDURE_INDENTED_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mBORDURE_INDENTED_BANNER_PATTERN;
 	}
 
 	public static function BOW() : Bow{
@@ -1331,6 +1356,11 @@ final class VanillaItems{
 		return clone self::$_mCORAL_FAN;
 	}
 
+	public static function CREEPER_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mCREEPER_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mCREEPER_BANNER_PATTERN;
+	}
+
 	public static function CRIMSON_HANGING_SIGN() : HangingSign{
 		if(!isset(self::$_mCRIMSON_HANGING_SIGN)){ self::init(); }
 		return clone self::$_mCRIMSON_HANGING_SIGN;
@@ -1496,6 +1526,11 @@ final class VanillaItems{
 		return clone self::$_mFERMENTED_SPIDER_EYE;
 	}
 
+	public static function FIELD_MASONED_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mFIELD_MASONED_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mFIELD_MASONED_BANNER_PATTERN;
+	}
+
 	public static function FIREWORK_ROCKET() : FireworkRocket{
 		if(!isset(self::$_mFIREWORK_ROCKET)){ self::init(); }
 		return clone self::$_mFIREWORK_ROCKET;
@@ -1526,6 +1561,16 @@ final class VanillaItems{
 		return clone self::$_mFLINT_AND_STEEL;
 	}
 
+	public static function FLOWER_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mFLOWER_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mFLOWER_BANNER_PATTERN;
+	}
+
+	public static function FLOW_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mFLOW_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mFLOW_BANNER_PATTERN;
+	}
+
 	public static function GHAST_TEAR() : Item{
 		if(!isset(self::$_mGHAST_TEAR)){ self::init(); }
 		return clone self::$_mGHAST_TEAR;
@@ -1539,6 +1584,11 @@ final class VanillaItems{
 	public static function GLISTERING_MELON() : Item{
 		if(!isset(self::$_mGLISTERING_MELON)){ self::init(); }
 		return clone self::$_mGLISTERING_MELON;
+	}
+
+	public static function GLOBE_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mGLOBE_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mGLOBE_BANNER_PATTERN;
 	}
 
 	public static function GLOWSTONE_DUST() : Item{
@@ -1634,6 +1684,11 @@ final class VanillaItems{
 	public static function GUNPOWDER() : Item{
 		if(!isset(self::$_mGUNPOWDER)){ self::init(); }
 		return clone self::$_mGUNPOWDER;
+	}
+
+	public static function GUSTER_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mGUSTER_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mGUSTER_BANNER_PATTERN;
 	}
 
 	public static function HEART_OF_THE_SEA() : Item{
@@ -1831,6 +1886,11 @@ final class VanillaItems{
 		return clone self::$_mMINECART;
 	}
 
+	public static function MOJANG_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mMOJANG_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mMOJANG_BANNER_PATTERN;
+	}
+
 	public static function MUSHROOM_STEW() : MushroomStew{
 		if(!isset(self::$_mMUSHROOM_STEW)){ self::init(); }
 		return clone self::$_mMUSHROOM_STEW;
@@ -1969,6 +2029,11 @@ final class VanillaItems{
 	public static function PHANTOM_MEMBRANE() : Item{
 		if(!isset(self::$_mPHANTOM_MEMBRANE)){ self::init(); }
 		return clone self::$_mPHANTOM_MEMBRANE;
+	}
+
+	public static function PIGLIN_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mPIGLIN_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mPIGLIN_BANNER_PATTERN;
 	}
 
 	public static function PITCHER_POD() : PitcherPod{
@@ -2259,6 +2324,11 @@ final class VanillaItems{
 	public static function SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE() : Item{
 		if(!isset(self::$_mSILENCE_ARMOR_TRIM_SMITHING_TEMPLATE)){ self::init(); }
 		return clone self::$_mSILENCE_ARMOR_TRIM_SMITHING_TEMPLATE;
+	}
+
+	public static function SKULL_BANNER_PATTERN() : BannerPattern{
+		if(!isset(self::$_mSKULL_BANNER_PATTERN)){ self::init(); }
+		return clone self::$_mSKULL_BANNER_PATTERN;
 	}
 
 	public static function SLIMEBALL() : Item{

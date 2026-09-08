@@ -198,6 +198,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::BONE, Items::BONE());
 		$this->map1to1Item(Ids::BONE_MEAL, Items::BONE_MEAL());
 		$this->map1to1Item(Ids::BOOK, Items::BOOK());
+		$this->map1to1Item(Ids::BORDURE_INDENTED_BANNER_PATTERN, Items::BORDURE_INDENTED_BANNER_PATTERN());
 		$this->map1to1Item(Ids::BOW, Items::BOW());
 		$this->map1to1Item(Ids::BOWL, Items::BOWL());
 		$this->map1to1Item(Ids::BREAD, Items::BREAD());
@@ -241,6 +242,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::COPPER_SHOVEL, Items::COPPER_SHOVEL());
 		$this->map1to1Item(Ids::COPPER_SPEAR, Items::COPPER_SPEAR());
 		$this->map1to1Item(Ids::COPPER_SWORD, Items::COPPER_SWORD());
+		$this->map1to1Item(Ids::CREEPER_BANNER_PATTERN, Items::CREEPER_BANNER_PATTERN());
 		$this->map1to1Item(Ids::CRIMSON_HANGING_SIGN, Items::CRIMSON_HANGING_SIGN());
 		$this->map1to1Item(Ids::CRIMSON_SIGN, Items::CRIMSON_SIGN());
 		$this->map1to1Item(Ids::DARK_OAK_BOAT, Items::DARK_OAK_BOAT());
@@ -273,14 +275,18 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::EYE_ARMOR_TRIM_SMITHING_TEMPLATE, Items::EYE_ARMOR_TRIM_SMITHING_TEMPLATE());
 		$this->map1to1Item(Ids::FEATHER, Items::FEATHER());
 		$this->map1to1Item(Ids::FERMENTED_SPIDER_EYE, Items::FERMENTED_SPIDER_EYE());
+		$this->map1to1Item(Ids::FIELD_MASONED_BANNER_PATTERN, Items::FIELD_MASONED_BANNER_PATTERN());
 		$this->map1to1Item(Ids::FIREWORK_ROCKET, Items::FIREWORK_ROCKET());
 		$this->map1to1Item(Ids::FIRE_CHARGE, Items::FIRE_CHARGE());
 		$this->map1to1Item(Ids::FISHING_ROD, Items::FISHING_ROD());
 		$this->map1to1Item(Ids::FLINT, Items::FLINT());
 		$this->map1to1Item(Ids::FLINT_AND_STEEL, Items::FLINT_AND_STEEL());
+		$this->map1to1Item(Ids::FLOWER_BANNER_PATTERN, Items::FLOWER_BANNER_PATTERN());
+		$this->map1to1Item(Ids::FLOW_BANNER_PATTERN, Items::FLOW_BANNER_PATTERN());
 		$this->map1to1Item(Ids::GHAST_TEAR, Items::GHAST_TEAR());
 		$this->map1to1Item(Ids::GLASS_BOTTLE, Items::GLASS_BOTTLE());
 		$this->map1to1Item(Ids::GLISTERING_MELON_SLICE, Items::GLISTERING_MELON());
+		$this->map1to1Item(Ids::GLOBE_BANNER_PATTERN, Items::GLOBE_BANNER_PATTERN());
 		$this->map1to1Item(Ids::GLOW_BERRIES, Items::GLOW_BERRIES());
 		$this->map1to1Item(Ids::GLOW_INK_SAC, Items::GLOW_INK_SAC());
 		$this->map1to1Item(Ids::GLOWSTONE_DUST, Items::GLOWSTONE_DUST());
@@ -299,6 +305,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::GOLDEN_SPEAR, Items::GOLDEN_SPEAR());
 		$this->map1to1Item(Ids::GOLDEN_SWORD, Items::GOLDEN_SWORD());
 		$this->map1to1Item(Ids::GUNPOWDER, Items::GUNPOWDER());
+		$this->map1to1Item(Ids::GUSTER_BANNER_PATTERN, Items::GUSTER_BANNER_PATTERN());
 		$this->map1to1Item(Ids::HEART_OF_THE_SEA, Items::HEART_OF_THE_SEA());
 		$this->map1to1Item(Ids::HONEY_BOTTLE, Items::HONEY_BOTTLE());
 		$this->map1to1Item(Ids::HONEYCOMB, Items::HONEYCOMB());
@@ -336,6 +343,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::MELON_SLICE, Items::MELON());
 		$this->map1to1Item(Ids::MILK_BUCKET, Items::MILK_BUCKET());
 		$this->map1to1Item(Ids::MINECART, Items::MINECART());
+		$this->map1to1Item(Ids::MOJANG_BANNER_PATTERN, Items::MOJANG_BANNER_PATTERN());
 		$this->map1to1Item(Ids::MUSHROOM_STEW, Items::MUSHROOM_STEW());
 		$this->map1to1Item(Ids::MUSIC_DISC_11, Items::RECORD_11());
 		$this->map1to1Item(Ids::MUSIC_DISC_13, Items::RECORD_13());
@@ -384,6 +392,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::PALE_OAK_SIGN, Items::PALE_OAK_SIGN());
 		$this->map1to1Item(Ids::PAPER, Items::PAPER());
 		$this->map1to1Item(Ids::PHANTOM_MEMBRANE, Items::PHANTOM_MEMBRANE());
+		$this->map1to1Item(Ids::PIGLIN_BANNER_PATTERN, Items::PIGLIN_BANNER_PATTERN());
 		$this->map1to1Item(Ids::PITCHER_POD, Items::PITCHER_POD());
 		$this->map1to1Item(Ids::POISONOUS_POTATO, Items::POISONOUS_POTATO());
 		$this->map1to1Item(Ids::POPPED_CHORUS_FRUIT, Items::POPPED_CHORUS_FRUIT());
@@ -409,6 +418,7 @@ final class ItemSerializerDeserializerRegistrar{
 		$this->map1to1Item(Ids::RIB_ARMOR_TRIM_SMITHING_TEMPLATE, Items::RIB_ARMOR_TRIM_SMITHING_TEMPLATE());
 		$this->map1to1Item(Ids::ROTTEN_FLESH, Items::ROTTEN_FLESH());
 		$this->map1to1Item(Ids::SALMON, Items::RAW_SALMON());
+		$this->map1to1Item(Ids::SKULL_BANNER_PATTERN, Items::SKULL_BANNER_PATTERN());
 		$this->map1to1Item(Ids::TURTLE_SCUTE, Items::SCUTE());
 		$this->map1to1Item(Ids::SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE, Items::SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE());
 		$this->map1to1Item(Ids::SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, Items::SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE());

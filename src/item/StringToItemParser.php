@@ -1343,6 +1343,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("bone", fn() => Items::BONE());
 		$result->register("bone_meal", fn() => Items::BONE_MEAL());
 		$result->register("book", fn() => Items::BOOK());
+		$result->register("bordure_indented_banner_pattern", fn() => Items::BORDURE_INDENTED_BANNER_PATTERN());
 		$result->register("bottle_o_enchanting", fn() => Items::EXPERIENCE_BOTTLE());
 		$result->register("bow", fn() => Items::BOW());
 		$result->register("bowl", fn() => Items::BOWL());
@@ -1433,6 +1434,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("copper_pickaxe", fn() => Items::COPPER_PICKAXE());
 		$result->register("copper_shovel", fn() => Items::COPPER_SHOVEL());
 		$result->register("copper_sword", fn() => Items::COPPER_SWORD());
+		$result->register("creeper_banner_pattern", fn() => Items::CREEPER_BANNER_PATTERN());
 		$result->register("crimson_hanging_sign", fn() => Items::CRIMSON_HANGING_SIGN());
 		$result->register("dark_oak_boat", fn() => Items::DARK_OAK_BOAT());
 		$result->register("dark_oak_hanging_sign", fn() => Items::DARK_OAK_HANGING_SIGN());
@@ -1466,6 +1468,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("eye_drops", fn() => Items::MEDICINE()->setType(MedicineType::EYE_DROPS));
 		$result->register("feather", fn() => Items::FEATHER());
 		$result->register("fermented_spider_eye", fn() => Items::FERMENTED_SPIDER_EYE());
+		$result->register("field_masoned_banner_pattern", fn() => Items::FIELD_MASONED_BANNER_PATTERN());
 		$result->register("firework_rocket", fn() => Items::FIREWORK_ROCKET());
 		$result->register("firework_star", fn() => Items::FIREWORK_STAR());
 		$result->register("fireworks", fn() => Items::FIREWORK_ROCKET());
@@ -1475,9 +1478,12 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("flint", fn() => Items::FLINT());
 		$result->register("flint_and_steel", fn() => Items::FLINT_AND_STEEL());
 		$result->register("flint_steel", fn() => Items::FLINT_AND_STEEL());
+		$result->register("flow_banner_pattern", fn() => Items::FLOW_BANNER_PATTERN());
+		$result->register("flower_banner_pattern", fn() => Items::FLOWER_BANNER_PATTERN());
 		$result->register("ghast_tear", fn() => Items::GHAST_TEAR());
 		$result->register("glass_bottle", fn() => Items::GLASS_BOTTLE());
 		$result->register("glistering_melon", fn() => Items::GLISTERING_MELON());
+		$result->register("globe_banner_pattern", fn() => Items::GLOBE_BANNER_PATTERN());
 		$result->register("glow_berries", fn() => Items::GLOW_BERRIES());
 		$result->register("glow_ink_sac", fn() => Items::GLOW_INK_SAC());
 		$result->register("glowstone_dust", fn() => Items::GLOWSTONE_DUST());
@@ -1506,6 +1512,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("golden_shovel", fn() => Items::GOLDEN_SHOVEL());
 		$result->register("golden_sword", fn() => Items::GOLDEN_SWORD());
 		$result->register("gunpowder", fn() => Items::GUNPOWDER());
+		$result->register("guster_banner_pattern", fn() => Items::GUSTER_BANNER_PATTERN());
 		$result->register("heart_of_the_sea", fn() => Items::HEART_OF_THE_SEA());
 		$result->register("honey_bottle", fn() => Items::HONEY_BOTTLE());
 		$result->register("host_armor_trim_smithing_template", fn() => Items::HOST_ARMOR_TRIM_SMITHING_TEMPLATE());
@@ -1543,6 +1550,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("melon_slice", fn() => Items::MELON());
 		$result->register("milk_bucket", fn() => Items::MILK_BUCKET());
 		$result->register("minecart", fn() => Items::MINECART());
+		$result->register("mojang_banner_pattern", fn() => Items::MOJANG_BANNER_PATTERN());
 		$result->register("mushroom_stew", fn() => Items::MUSHROOM_STEW());
 		$result->register("mutton", fn() => Items::RAW_MUTTON());
 		$result->register("mutton_cooked", fn() => Items::COOKED_MUTTON());
@@ -1574,6 +1582,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("pale_oak_hanging_sign", fn() => Items::PALE_OAK_HANGING_SIGN());
 		$result->register("paper", fn() => Items::PAPER());
 		$result->register("phantom_membrane", fn() => Items::PHANTOM_MEMBRANE());
+		$result->register("piglin_banner_pattern", fn() => Items::PIGLIN_BANNER_PATTERN());
 		$result->register("pitcher_pod", fn() => Items::PITCHER_POD());
 		$result->register("poisonous_potato", fn() => Items::POISONOUS_POTATO());
 		$result->register("popped_chorus_fruit", fn() => Items::POPPED_CHORUS_FRUIT());
@@ -1639,6 +1648,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("shield", fn() => Items::SHIELD());
 		$result->register("shulker_shell", fn() => Items::SHULKER_SHELL());
 		$result->register("silence_armor_trim_smithing_template", fn() => Items::SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE());
+		$result->register("skull_banner_pattern", fn() => Items::SKULL_BANNER_PATTERN());
 		$result->register("slime_ball", fn() => Items::SLIMEBALL());
 		$result->register("snout_armor_trim_smithing_template", fn() => Items::SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE());
 		$result->register("slimeball", fn() => Items::SLIMEBALL());
