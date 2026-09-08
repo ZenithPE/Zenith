@@ -1277,6 +1277,28 @@ class Server {
 	}
 
 	/**
+	 * Whether a connection has to carry a signed identity assertion, for players found on the local
+	 * network and for players joining by address.
+	 *
+	 * A client that joins by address is signed in and signs its offer, and that signature is the only
+	 * thing tying the connection to the identity it then logs in with - so with xbox-auth on it is
+	 * required by default. A client that broadcasts on the local network does not sign, so requiring
+	 * it there is left to whoever knows their players.
+	 *
+	 * @return array{bool, bool}
+	 */
+	private function getNetherNetIdentityPolicy() : array{
+		$configured = $this->configGroup->getProperty(Yml::NETWORK_NETHERNET_REQUIRE_IDENTITY, "auto");
+		if(is_bool($configured)){
+			return [$configured, $configured];
+		}
+		if(!is_string($configured) || strtolower($configured) !== "auto"){
+			$this->logger->warning("Ignoring " . Yml::NETWORK_NETHERNET_REQUIRE_IDENTITY . ", expected true, false or auto");
+		}
+		return [false, $this->getOnlineMode()];
+	}
+
+	/**
 	 * The local addresses NetherNet offers players a path on. Every address the ICE agent gathers on
 	 * costs a socket per player, and most machines have a few no player could ever reach.
 	 *
@@ -1337,6 +1359,7 @@ class Server {
 				}
 			}
 			if($useNetherNet){
+				[$requireIdentity, $requireEndpointIdentity] = $this->getNetherNetIdentityPolicy();
 				$transport = new ThreadedTransport(
 					$this->logger,
 					new NetherNetTransportFactory(
@@ -1351,7 +1374,8 @@ class Server {
 						$port,
 						Path::join($this->dataPath, "identity.key"),
 						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_IDENTITY_DOMAIN, "self"),
-						$this->configGroup->getPropertyBool(Yml::NETWORK_NETHERNET_REQUIRE_IDENTITY, false),
+						$requireIdentity,
+						$requireEndpointIdentity,
 						$this->getNetherNetIceServers(),
 						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_USERNAME, ""),
 						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_PASSWORD, ""),

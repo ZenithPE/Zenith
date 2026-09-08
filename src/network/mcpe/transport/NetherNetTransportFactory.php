@@ -54,6 +54,7 @@ final class NetherNetTransportFactory implements TransportFactory{
 		private ?string $identityKeyPath = null,
 		private string $identityDomain = "self",
 		private bool $requireIdentity = false,
+		private bool $requireEndpointIdentity = false,
 		private array $iceServers = [],
 		private string $iceUsername = "",
 		private string $icePassword = "",
@@ -105,9 +106,9 @@ final class NetherNetTransportFactory implements TransportFactory{
 			identityKeyPath: $this->identityKeyPath,
 			identityDomain: $this->identityDomain,
 			relayOnly: $this->relayOnly,
-			//holding players to a signed offer is the operator's call until a real client has been
-			//watched doing it - a client that does not sign would be locked out by guessing wrong
-			requireEndpointIdentity: $this->requireIdentity,
+			//a player who joins by address is signed in and their client signs the offer, so the
+			//assertion is the only thing binding that connection to the identity it logs in with
+			requireEndpointIdentity: $this->requireEndpointIdentity,
 			iceInterfaces: $this->iceInterfaces
 		);
 	}
