@@ -251,12 +251,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/altayofficial/Network.git",
-                "reference": "ab250091e4456577d73af65b352316312697ef4b"
+                "reference": "8533460d2ed787a6645af1ba0da65238d597f71f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/altayofficial/Network/zipball/ab250091e4456577d73af65b352316312697ef4b",
-                "reference": "ab250091e4456577d73af65b352316312697ef4b",
+                "url": "https://api.github.com/repos/altayofficial/Network/zipball/8533460d2ed787a6645af1ba0da65238d597f71f",
+                "reference": "8533460d2ed787a6645af1ba0da65238d597f71f",
                 "shasum": ""
             },
             "require": {
@@ -306,7 +306,7 @@
                 "source": "https://github.com/altayofficial/Network/tree/main",
                 "issues": "https://github.com/altayofficial/Network/issues"
             },
-            "time": "2026-09-08T19:05:42+00:00"
+            "time": "2026-09-08T19:08:55+00:00"
         },
         {
             "name": "altayofficial/webrtc",

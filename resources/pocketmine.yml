@@ -71,8 +71,9 @@ network:
   nethernet:
     #Domain shown to players the first time their client is asked to trust this server's identity.
     identity-domain: self
-    #Reject connections found through the local network that do not carry a signed identity assertion.
-    #Players joining by address always have to present one when xbox-auth is enabled.
+    #Reject connections that do not carry a signed identity assertion. Whether a client sends one
+    #differs between joining by address and finding the server on the local network, so turn this on
+    #only after watching a real client connect - the debug log names every connection without one.
     require-identity: false
     #STUN and TURN servers used to find a path to players who cannot be reached directly.
     #Host candidates are enough on a local network, so this can be left empty there.

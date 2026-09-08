@@ -105,8 +105,9 @@ final class NetherNetTransportFactory implements TransportFactory{
 			identityKeyPath: $this->identityKeyPath,
 			identityDomain: $this->identityDomain,
 			relayOnly: $this->relayOnly,
-			//a player who joins by address is signed in, so their client always signs its offer
-			requireEndpointIdentity: $this->onlineMode,
+			//holding players to a signed offer is the operator's call until a real client has been
+			//watched doing it - a client that does not sign would be locked out by guessing wrong
+			requireEndpointIdentity: $this->requireIdentity,
 			iceInterfaces: $this->iceInterfaces
 		);
 	}
