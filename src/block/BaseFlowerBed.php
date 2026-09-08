@@ -67,7 +67,10 @@ abstract class BaseFlowerBed extends Flowable implements HorizontalFacing{
 	}
 
 	private function canBeSupportedAt(Block $block) : bool{
-		$supportBlock = $block->getSide(Facing::DOWN);
+		return $this->canBeSupportedBy($block->getSide(Facing::DOWN));
+	}
+
+	protected function canBeSupportedBy(Block $supportBlock) : bool{
 		//TODO: Moss block
 		return $supportBlock->hasTypeTag(BlockTypeTags::DIRT) || $supportBlock->hasTypeTag(BlockTypeTags::MUD);
 	}

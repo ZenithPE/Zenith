@@ -64,6 +64,7 @@ use pocketmine\block\GlazedTerracotta;
 use pocketmine\block\Hopper;
 use pocketmine\block\Kelp;
 use pocketmine\block\Lantern;
+use pocketmine\block\LeafLitter;
 use pocketmine\block\Leaves;
 use pocketmine\block\Lectern;
 use pocketmine\block\Lever;
@@ -1457,6 +1458,11 @@ final class VanillaBlockMappings{
 
 		//L
 		$reg->mapModel(Model::create(Blocks::LADDER(), Ids::LADDER)->properties([$commonProperties->horizontalFacingClassic]));
+		$reg->mapModel(Model::create(Blocks::LEAF_LITTER(), Ids::LEAF_LITTER)->properties([
+			//like pink petals, only 0-3 is used, but the state allows up to 7
+			new IntProperty(StateNames::GROWTH, 0, 7, fn(LeafLitter $b) => $b->getCount(), fn(LeafLitter $b, int $v) => $b->setCount(min($v, LeafLitter::MAX_COUNT)), offset: 1),
+			$commonProperties->horizontalFacingCardinal
+		]));
 		$reg->mapModel(Model::create(Blocks::LANTERN(), Ids::LANTERN)->properties([
 			new BoolProperty(StateNames::HANGING, fn(Lantern $b) => $b->isHanging(), fn(Lantern $b, bool $v) => $b->setHanging($v))
 		]));
