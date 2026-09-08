@@ -898,8 +898,9 @@ final class BlockTypeIds{
 	public const KELP = 10865;
 	public const HEAVY_CORE = 10866;
 	public const LEAF_LITTER = 10867;
+	public const BUSH = 10868;
 
-	public const FIRST_UNUSED_BLOCK_ID = 10868;
+	public const FIRST_UNUSED_BLOCK_ID = 10869;
 
 	private static int $nextDynamicId = self::FIRST_UNUSED_BLOCK_ID;
 

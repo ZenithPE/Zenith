@@ -182,6 +182,7 @@ final class VanillaBlockMappings{
 		$reg->mapSimple(Blocks::BRICKS(), Ids::BRICK_BLOCK);
 		$reg->mapSimple(Blocks::BROWN_MUSHROOM(), Ids::BROWN_MUSHROOM);
 		$reg->mapSimple(Blocks::BUDDING_AMETHYST(), Ids::BUDDING_AMETHYST);
+		$reg->mapSimple(Blocks::BUSH(), Ids::BUSH);
 		$reg->mapSimple(Blocks::CALCITE(), Ids::CALCITE);
 		$reg->mapSimple(Blocks::CARTOGRAPHY_TABLE(), Ids::CARTOGRAPHY_TABLE);
 		$reg->mapSimple(Blocks::CHEMICAL_HEAT(), Ids::CHEMICAL_HEAT);

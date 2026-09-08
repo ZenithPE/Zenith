@@ -177,6 +177,7 @@ final class VanillaBlocksInputs extends RegistrySource{
 
 		self::register("brown_mushroom", fn(BID $id) => new BrownMushroom($id, "Brown Mushroom", new Info(BreakInfo::instant(), [Tags::POTTABLE_PLANTS])));
 		self::register("bubble_column", fn(BID $id) => new BubbleColumn($id, "Bubble Column", new Info(BreakInfo::indestructible(500.0))));
+		self::register("bush", fn(BID $id) => new Bush($id, "Bush", new Info(BreakInfo::instant(ToolType::SHEARS, 1))));
 		self::register("cactus", fn(BID $id) => new Cactus($id, "Cactus", new Info(new BreakInfo(0.4), [Tags::POTTABLE_PLANTS])));
 		self::register("cake", fn(BID $id) => new Cake($id, "Cake", new Info(new BreakInfo(0.5))));
 
