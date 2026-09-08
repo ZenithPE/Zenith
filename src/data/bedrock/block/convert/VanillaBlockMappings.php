@@ -111,6 +111,7 @@ use pocketmine\block\utils\PoweredByRedstone;
 use pocketmine\block\utils\SeagrassType;
 use pocketmine\block\VanillaBlocks as Blocks;
 use pocketmine\block\Vine;
+use pocketmine\block\Wildflowers;
 use pocketmine\data\bedrock\block\BlockLegacyMetadata;
 use pocketmine\data\bedrock\block\BlockStateDeserializeException;
 use pocketmine\data\bedrock\block\BlockStateNames as StateNames;
@@ -1571,6 +1572,11 @@ final class VanillaBlockMappings{
 		]));
 		$reg->mapModel(Model::create(Blocks::WEIGHTED_PRESSURE_PLATE_HEAVY(), Ids::HEAVY_WEIGHTED_PRESSURE_PLATE)->properties([$commonProperties->analogRedstoneSignal]));
 		$reg->mapModel(Model::create(Blocks::WEIGHTED_PRESSURE_PLATE_LIGHT(), Ids::LIGHT_WEIGHTED_PRESSURE_PLATE)->properties([$commonProperties->analogRedstoneSignal]));
+		$reg->mapModel(Model::create(Blocks::WILDFLOWERS(), Ids::WILDFLOWERS)->properties([
+			//like pink petals, only 0-3 is used, but the state allows up to 7
+			new IntProperty(StateNames::GROWTH, 0, 7, fn(Wildflowers $b) => $b->getCount(), fn(Wildflowers $b, int $v) => $b->setCount(min($v, Wildflowers::MAX_COUNT)), offset: 1),
+			$commonProperties->horizontalFacingCardinal
+		]));
 	}
 
 	/**

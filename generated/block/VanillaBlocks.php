@@ -875,6 +875,7 @@ final class VanillaBlocks{
 	private static WeightedPressurePlateLight $_mWEIGHTED_PRESSURE_PLATE_LIGHT;
 	private static Wheat $_mWHEAT;
 	private static Flower $_mWHITE_TULIP;
+	private static Wildflowers $_mWILDFLOWERS;
 	private static WitherRose $_mWITHER_ROSE;
 	private static Wool $_mWOOL;
 
@@ -1746,6 +1747,7 @@ final class VanillaBlocks{
 			"weighted_pressure_plate_light" => fn(WeightedPressurePlateLight $v) => self::$_mWEIGHTED_PRESSURE_PLATE_LIGHT = $v,
 			"wheat" => fn(Wheat $v) => self::$_mWHEAT = $v,
 			"white_tulip" => fn(Flower $v) => self::$_mWHITE_TULIP = $v,
+			"wildflowers" => fn(Wildflowers $v) => self::$_mWILDFLOWERS = $v,
 			"wither_rose" => fn(WitherRose $v) => self::$_mWITHER_ROSE = $v,
 			"wool" => fn(Wool $v) => self::$_mWOOL = $v,
 		];
@@ -5959,6 +5961,11 @@ final class VanillaBlocks{
 	public static function WHITE_TULIP() : Flower{
 		if(!isset(self::$_mWHITE_TULIP)){ self::init(); }
 		return clone self::$_mWHITE_TULIP;
+	}
+
+	public static function WILDFLOWERS() : Wildflowers{
+		if(!isset(self::$_mWILDFLOWERS)){ self::init(); }
+		return clone self::$_mWILDFLOWERS;
 	}
 
 	public static function WITHER_ROSE() : WitherRose{

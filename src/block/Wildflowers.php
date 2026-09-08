@@ -25,6 +25,6 @@ declare(strict_types=1);
 
 namespace pocketmine\block;
 
-class PinkPetals extends BaseFlowerBed{
+class Wildflowers extends BaseFlowerBed{
 
 }
