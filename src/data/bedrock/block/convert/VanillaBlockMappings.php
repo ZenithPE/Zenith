@@ -359,6 +359,7 @@ final class VanillaBlockMappings{
 		$reg->mapSimple(Blocks::END_STONE(), Ids::END_STONE);
 		$reg->mapSimple(Blocks::END_STONE_BRICKS(), Ids::END_BRICKS);
 		$reg->mapSimple(Blocks::FERN(), Ids::FERN);
+		$reg->mapSimple(Blocks::FIREFLY_BUSH(), Ids::FIREFLY_BUSH);
 		$reg->mapSimple(Blocks::FLETCHING_TABLE(), Ids::FLETCHING_TABLE);
 		$reg->mapSimple(Blocks::FLOWERING_AZALEA(), Ids::FLOWERING_AZALEA);
 		$reg->mapSimple(Blocks::GILDED_BLACKSTONE(), Ids::GILDED_BLACKSTONE);

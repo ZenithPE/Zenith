@@ -459,6 +459,7 @@ final class VanillaBlocks{
 	private static Farmland $_mFARMLAND;
 	private static TallGrass $_mFERN;
 	private static Fire $_mFIRE;
+	private static FireflyBush $_mFIREFLY_BUSH;
 	private static FletchingTable $_mFLETCHING_TABLE;
 	private static Azalea $_mFLOWERING_AZALEA;
 	private static Leaves $_mFLOWERING_AZALEA_LEAVES;
@@ -1335,6 +1336,7 @@ final class VanillaBlocks{
 			"farmland" => fn(Farmland $v) => self::$_mFARMLAND = $v,
 			"fern" => fn(TallGrass $v) => self::$_mFERN = $v,
 			"fire" => fn(Fire $v) => self::$_mFIRE = $v,
+			"firefly_bush" => fn(FireflyBush $v) => self::$_mFIREFLY_BUSH = $v,
 			"fletching_table" => fn(FletchingTable $v) => self::$_mFLETCHING_TABLE = $v,
 			"flowering_azalea" => fn(Azalea $v) => self::$_mFLOWERING_AZALEA = $v,
 			"flowering_azalea_leaves" => fn(Leaves $v) => self::$_mFLOWERING_AZALEA_LEAVES = $v,
@@ -3889,6 +3891,11 @@ final class VanillaBlocks{
 	public static function FIRE() : Fire{
 		if(!isset(self::$_mFIRE)){ self::init(); }
 		return clone self::$_mFIRE;
+	}
+
+	public static function FIREFLY_BUSH() : FireflyBush{
+		if(!isset(self::$_mFIREFLY_BUSH)){ self::init(); }
+		return clone self::$_mFIREFLY_BUSH;
 	}
 
 	public static function FLETCHING_TABLE() : FletchingTable{
