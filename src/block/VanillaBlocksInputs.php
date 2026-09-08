@@ -487,6 +487,10 @@ final class VanillaBlocksInputs extends RegistrySource{
 		self::register("fern", fn(BID $id) => new TallGrass($id, "Fern", new Info(BreakInfo::instant(ToolType::SHEARS, 1), [Tags::POTTABLE_PLANTS]), fn() => VanillaBlocks::LARGE_FERN()));
 		self::register("tall_grass", fn(BID $id) => new TallGrass($id, "Tall Grass", new Info(BreakInfo::instant(ToolType::SHEARS, 1)), fn() => VanillaBlocks::DOUBLE_TALLGRASS()));
 
+		$dryGrassBreakInfo = new Info(BreakInfo::instant(ToolType::SHEARS, 1));
+		self::register("short_dry_grass", fn(BID $id) => new ShortDryGrass($id, "Short Dry Grass", $dryGrassBreakInfo));
+		self::register("tall_dry_grass", fn(BID $id) => new TallDryGrass($id, "Tall Dry Grass", $dryGrassBreakInfo));
+
 		self::register("blue_torch", fn(BID $id) => new Torch($id, "Blue Torch", new Info(BreakInfo::instant())));
 		self::register("copper_torch", fn(BID $id) => new Torch($id, "Copper Torch", new Info(BreakInfo::instant())));
 		self::register("purple_torch", fn(BID $id) => new Torch($id, "Purple Torch", new Info(BreakInfo::instant())));

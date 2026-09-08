@@ -451,6 +451,7 @@ final class VanillaBlockMappings{
 		$reg->mapSimple(Blocks::SCULK(), Ids::SCULK);
 		$reg->mapSimple(Blocks::SEA_LANTERN(), Ids::SEA_LANTERN);
 		$reg->mapSimple(Blocks::SHROOMLIGHT(), Ids::SHROOMLIGHT);
+		$reg->mapSimple(Blocks::SHORT_DRY_GRASS(), Ids::SHORT_DRY_GRASS);
 		$reg->mapSimple(Blocks::SHULKER_BOX(), Ids::UNDYED_SHULKER_BOX);
 		$reg->mapSimple(Blocks::SLIME(), Ids::SLIME);
 		$reg->mapSimple(Blocks::SMITHING_TABLE(), Ids::SMITHING_TABLE);
@@ -468,6 +469,7 @@ final class VanillaBlockMappings{
 		$reg->mapSimple(Blocks::SULFUR(), Ids::SULFUR);
 		$reg->mapSimple(Blocks::SULFUR_BRICKS(), Ids::SULFUR_BRICKS);
 		$reg->mapSimple(Blocks::TALL_GRASS(), Ids::SHORT_GRASS);  //no, this is not a typo - tall_grass is now the double block, just to be confusing :(
+		$reg->mapSimple(Blocks::TALL_DRY_GRASS(), Ids::TALL_DRY_GRASS);
 		$reg->mapSimple(Blocks::TINTED_GLASS(), Ids::TINTED_GLASS);
 		$reg->mapSimple(Blocks::TORCHFLOWER(), Ids::TORCHFLOWER);
 		$reg->mapSimple(Blocks::TUFF(), Ids::TUFF);

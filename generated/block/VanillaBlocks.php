@@ -758,6 +758,7 @@ final class VanillaBlocks{
 	private static Seagrass $_mSEAGRASS;
 	private static SeaLantern $_mSEA_LANTERN;
 	private static SeaPickle $_mSEA_PICKLE;
+	private static ShortDryGrass $_mSHORT_DRY_GRASS;
 	private static Opaque $_mSHROOMLIGHT;
 	private static ShulkerBox $_mSHULKER_BOX;
 	private static Slime $_mSLIME;
@@ -831,6 +832,7 @@ final class VanillaBlocks{
 	private static Wall $_mSULFUR_WALL;
 	private static DoublePlant $_mSUNFLOWER;
 	private static SweetBerryBush $_mSWEET_BERRY_BUSH;
+	private static TallDryGrass $_mTALL_DRY_GRASS;
 	private static TallGrass $_mTALL_GRASS;
 	private static TintedGlass $_mTINTED_GLASS;
 	private static TNT $_mTNT;
@@ -1635,6 +1637,7 @@ final class VanillaBlocks{
 			"seagrass" => fn(Seagrass $v) => self::$_mSEAGRASS = $v,
 			"sea_lantern" => fn(SeaLantern $v) => self::$_mSEA_LANTERN = $v,
 			"sea_pickle" => fn(SeaPickle $v) => self::$_mSEA_PICKLE = $v,
+			"short_dry_grass" => fn(ShortDryGrass $v) => self::$_mSHORT_DRY_GRASS = $v,
 			"shroomlight" => fn(Opaque $v) => self::$_mSHROOMLIGHT = $v,
 			"shulker_box" => fn(ShulkerBox $v) => self::$_mSHULKER_BOX = $v,
 			"slime" => fn(Slime $v) => self::$_mSLIME = $v,
@@ -1708,6 +1711,7 @@ final class VanillaBlocks{
 			"sulfur_wall" => fn(Wall $v) => self::$_mSULFUR_WALL = $v,
 			"sunflower" => fn(DoublePlant $v) => self::$_mSUNFLOWER = $v,
 			"sweet_berry_bush" => fn(SweetBerryBush $v) => self::$_mSWEET_BERRY_BUSH = $v,
+			"tall_dry_grass" => fn(TallDryGrass $v) => self::$_mTALL_DRY_GRASS = $v,
 			"tall_grass" => fn(TallGrass $v) => self::$_mTALL_GRASS = $v,
 			"tinted_glass" => fn(TintedGlass $v) => self::$_mTINTED_GLASS = $v,
 			"tnt" => fn(TNT $v) => self::$_mTNT = $v,
@@ -5388,6 +5392,11 @@ final class VanillaBlocks{
 		return clone self::$_mSEA_PICKLE;
 	}
 
+	public static function SHORT_DRY_GRASS() : ShortDryGrass{
+		if(!isset(self::$_mSHORT_DRY_GRASS)){ self::init(); }
+		return clone self::$_mSHORT_DRY_GRASS;
+	}
+
 	public static function SHROOMLIGHT() : Opaque{
 		if(!isset(self::$_mSHROOMLIGHT)){ self::init(); }
 		return clone self::$_mSHROOMLIGHT;
@@ -5751,6 +5760,11 @@ final class VanillaBlocks{
 	public static function SWEET_BERRY_BUSH() : SweetBerryBush{
 		if(!isset(self::$_mSWEET_BERRY_BUSH)){ self::init(); }
 		return clone self::$_mSWEET_BERRY_BUSH;
+	}
+
+	public static function TALL_DRY_GRASS() : TallDryGrass{
+		if(!isset(self::$_mTALL_DRY_GRASS)){ self::init(); }
+		return clone self::$_mTALL_DRY_GRASS;
 	}
 
 	public static function TALL_GRASS() : TallGrass{
