@@ -1276,6 +1276,30 @@ class Server {
 		return $servers;
 	}
 
+	/**
+	 * The local addresses NetherNet offers players a path on. Every address the ICE agent gathers on
+	 * costs a socket per player, and most machines have a few no player could ever reach.
+	 *
+	 * @return string[]
+	 */
+	private function getNetherNetIceInterfaces() : array{
+		$configured = $this->configGroup->getProperty(Yml::NETWORK_NETHERNET_INTERFACES, []);
+		if(!is_array($configured)){
+			$this->logger->warning("Ignoring " . Yml::NETWORK_NETHERNET_INTERFACES . ", it must be a list of addresses");
+			return [];
+		}
+
+		$interfaces = [];
+		foreach($configured as $address){
+			if(!is_string($address) || $address === ""){
+				$this->logger->warning("Ignoring a NetherNet interface entry, it is not an address");
+				continue;
+			}
+			$interfaces[] = $address;
+		}
+		return $interfaces;
+	}
+
 	private function startupPrepareConnectableNetworkInterfaces(
 		string $ip,
 		int $port,
@@ -1330,7 +1354,8 @@ class Server {
 						$this->getNetherNetIceServers(),
 						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_USERNAME, ""),
 						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_PASSWORD, ""),
-						$this->configGroup->getPropertyBool(Yml::NETWORK_NETHERNET_RELAY_ONLY, false)
+						$this->configGroup->getPropertyBool(Yml::NETWORK_NETHERNET_RELAY_ONLY, false),
+						$this->getNetherNetIceInterfaces()
 					),
 					$this->tickSleeper
 				);

@@ -40,6 +40,7 @@ final class NetherNetTransportFactory implements TransportFactory{
 
 	/**
 	 * @param string[] $iceServers
+	 * @param string[] $iceInterfaces
 	 */
 	public function __construct(
 		private int $networkId,
@@ -56,7 +57,8 @@ final class NetherNetTransportFactory implements TransportFactory{
 		private array $iceServers = [],
 		private string $iceUsername = "",
 		private string $icePassword = "",
-		private bool $relayOnly = false
+		private bool $relayOnly = false,
+		private array $iceInterfaces = []
 	){}
 
 	public function getName() : string{
@@ -104,7 +106,8 @@ final class NetherNetTransportFactory implements TransportFactory{
 			identityDomain: $this->identityDomain,
 			relayOnly: $this->relayOnly,
 			//a player who joins by address is signed in, so their client always signs its offer
-			requireEndpointIdentity: $this->onlineMode
+			requireEndpointIdentity: $this->onlineMode,
+			iceInterfaces: $this->iceInterfaces
 		);
 	}
 }

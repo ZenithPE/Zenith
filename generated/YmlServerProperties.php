@@ -97,6 +97,7 @@ final class YmlServerProperties{
 	public const NETWORK_NETHERNET_ICE_SERVERS = 'network.nethernet.ice-servers';
 	public const NETWORK_NETHERNET_ICE_USERNAME = 'network.nethernet.ice-username';
 	public const NETWORK_NETHERNET_IDENTITY_DOMAIN = 'network.nethernet.identity-domain';
+	public const NETWORK_NETHERNET_INTERFACES = 'network.nethernet.interfaces';
 	public const NETWORK_NETHERNET_RELAY_ONLY = 'network.nethernet.relay-only';
 	public const NETWORK_NETHERNET_REQUIRE_IDENTITY = 'network.nethernet.require-identity';
 	public const NETWORK_TRANSPORT = 'network.transport';

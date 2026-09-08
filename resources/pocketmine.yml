@@ -82,6 +82,10 @@ network:
     ice-password: ""
     #Only accept relayed candidates, keeping the server address away from players. Needs a TURN server.
     relay-only: false
+    #Local addresses to offer players a path on. Each one costs a socket per player, and a machine
+    #usually has several no player can reach, such as container bridges. Leave empty to use the
+    #address the server is bound to, or every address when it is bound to all of them.
+    interfaces: []
   #Threshold for batching packets, in bytes. Only these packets will be compressed
   #Set to 0 to compress everything, -1 to disable.
   batch-threshold: 256
