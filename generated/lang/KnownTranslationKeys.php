@@ -244,6 +244,7 @@ final class KnownTranslationKeys{
 	public const ITEM_RECORD_RELIC_DESC = "item.record_relic.desc";
 	public const ITEM_RECORD_STAL_DESC = "item.record_stal.desc";
 	public const ITEM_RECORD_STRAD_DESC = "item.record_strad.desc";
+	public const ITEM_RECORD_TEARS_DESC = "item.record_tears.desc";
 	public const ITEM_RECORD_WAIT_DESC = "item.record_wait.desc";
 	public const ITEM_RECORD_WARD_DESC = "item.record_ward.desc";
 	public const ITEMGROUP_NAME_ANVIL = "itemGroup.name.anvil";

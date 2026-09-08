@@ -247,6 +247,7 @@ final class KnownTranslationParameterInfo{
 		Keys::ITEM_RECORD_RELIC_DESC => [],
 		Keys::ITEM_RECORD_STAL_DESC => [],
 		Keys::ITEM_RECORD_STRAD_DESC => [],
+		Keys::ITEM_RECORD_TEARS_DESC => [],
 		Keys::ITEM_RECORD_WAIT_DESC => [],
 		Keys::ITEM_RECORD_WARD_DESC => [],
 		Keys::ITEMGROUP_NAME_ANVIL => [],

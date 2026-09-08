@@ -328,6 +328,7 @@ final class VanillaItems{
 	private static Record $_mRECORD_RELIC;
 	private static Record $_mRECORD_STAL;
 	private static Record $_mRECORD_STRAD;
+	private static Record $_mRECORD_TEARS;
 	private static Record $_mRECORD_WAIT;
 	private static Record $_mRECORD_WARD;
 	private static Item $_mRECOVERY_COMPASS;
@@ -714,6 +715,7 @@ final class VanillaItems{
 			"record_relic" => fn(Record $v) => self::$_mRECORD_RELIC = $v,
 			"record_stal" => fn(Record $v) => self::$_mRECORD_STAL = $v,
 			"record_strad" => fn(Record $v) => self::$_mRECORD_STRAD = $v,
+			"record_tears" => fn(Record $v) => self::$_mRECORD_TEARS = $v,
 			"record_wait" => fn(Record $v) => self::$_mRECORD_WAIT = $v,
 			"record_ward" => fn(Record $v) => self::$_mRECORD_WARD = $v,
 			"recovery_compass" => fn(Item $v) => self::$_mRECOVERY_COMPASS = $v,
@@ -2254,6 +2256,11 @@ final class VanillaItems{
 	public static function RECORD_STRAD() : Record{
 		if(!isset(self::$_mRECORD_STRAD)){ self::init(); }
 		return clone self::$_mRECORD_STRAD;
+	}
+
+	public static function RECORD_TEARS() : Record{
+		if(!isset(self::$_mRECORD_TEARS)){ self::init(); }
+		return clone self::$_mRECORD_TEARS;
 	}
 
 	public static function RECORD_WAIT() : Record{

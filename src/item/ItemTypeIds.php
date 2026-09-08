@@ -392,8 +392,9 @@ final class ItemTypeIds{
 	public const MOJANG_BANNER_PATTERN = 20351;
 	public const PIGLIN_BANNER_PATTERN = 20352;
 	public const SKULL_BANNER_PATTERN = 20353;
+	public const RECORD_TEARS = 20354;
 
-	public const FIRST_UNUSED_ITEM_ID = 20354;
+	public const FIRST_UNUSED_ITEM_ID = 20355;
 
 	private static int $nextDynamicId = self::FIRST_UNUSED_ITEM_ID;
 

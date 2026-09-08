@@ -1097,6 +1097,10 @@ final class KnownTranslationFactory{
 		return new Translatable(KnownTranslationKeys::ITEM_RECORD_STRAD_DESC, []);
 	}
 
+	public static function item_record_tears_desc() : Translatable{
+		return new Translatable(KnownTranslationKeys::ITEM_RECORD_TEARS_DESC, []);
+	}
+
 	public static function item_record_wait_desc() : Translatable{
 		return new Translatable(KnownTranslationKeys::ITEM_RECORD_WAIT_DESC, []);
 	}
