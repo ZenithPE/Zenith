@@ -1252,6 +1252,30 @@ class Server {
 		return !$anyWorldFailedToLoad;
 	}
 
+	/**
+	 * The STUN and TURN servers NetherNet gathers candidates from. An empty list leaves the transport
+	 * with host candidates only, which is all a player on the same network ever needs.
+	 *
+	 * @return string[]
+	 */
+	private function getNetherNetIceServers() : array{
+		$configured = $this->configGroup->getProperty(Yml::NETWORK_NETHERNET_ICE_SERVERS, []);
+		if(!is_array($configured)){
+			$this->logger->warning("Ignoring " . Yml::NETWORK_NETHERNET_ICE_SERVERS . ", it must be a list of URLs");
+			return [];
+		}
+
+		$servers = [];
+		foreach($configured as $server){
+			if(!is_string($server) || $server === ""){
+				$this->logger->warning("Ignoring a NetherNet ICE server entry, it is not a URL");
+				continue;
+			}
+			$servers[] = $server;
+		}
+		return $servers;
+	}
+
 	private function startupPrepareConnectableNetworkInterfaces(
 		string $ip,
 		int $port,
@@ -1291,7 +1315,23 @@ class Server {
 			if($useNetherNet){
 				$transport = new ThreadedTransport(
 					$this->logger,
-					new NetherNetTransportFactory(Binary::readLLong(substr(hash("sha256", $this->getServerUniqueId()->getBytes(), true), 0, 8)), $this->getMotd(), $this->getName(), $this->getMaxPlayers(), $ip, NetherNetTransport::DISCOVERY_PORT, $this->getOnlineMode(), $port, Path::join($this->dataPath, "identity.key")),
+					new NetherNetTransportFactory(
+						Binary::readLLong(substr(hash("sha256", $this->getServerUniqueId()->getBytes(), true), 0, 8)),
+						$this->getMotd(),
+						$this->getName(),
+						$this->getMaxPlayers(),
+						$ip,
+						NetherNetTransport::DISCOVERY_PORT,
+						$this->getOnlineMode(),
+						$port,
+						Path::join($this->dataPath, "identity.key"),
+						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_IDENTITY_DOMAIN, "self"),
+						$this->configGroup->getPropertyBool(Yml::NETWORK_NETHERNET_REQUIRE_IDENTITY, false),
+						$this->getNetherNetIceServers(),
+						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_USERNAME, ""),
+						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_PASSWORD, ""),
+						$this->configGroup->getPropertyBool(Yml::NETWORK_NETHERNET_RELAY_ONLY, false)
+					),
 					$this->tickSleeper
 				);
 				if($this->network->registerInterface(new TransportNetworkInterface($this, $transport, $packetBroadcaster, $entityEventBroadcaster, $typeConverter))){

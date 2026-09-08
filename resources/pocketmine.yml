@@ -67,6 +67,21 @@ network:
   # Network transport, just to note that RakNet is deprecated
   # Options: nethernet (recommended), raknet or both
   transport: nethernet
+  #Settings for the NetherNet transport.
+  nethernet:
+    #Domain shown to players the first time their client is asked to trust this server's identity.
+    identity-domain: self
+    #Reject connections found through the local network that do not carry a signed identity assertion.
+    #Players joining by address always have to present one when xbox-auth is enabled.
+    require-identity: false
+    #STUN and TURN servers used to find a path to players who cannot be reached directly.
+    #Host candidates are enough on a local network, so this can be left empty there.
+    ice-servers: []
+    #Credentials for the TURN servers above, if they ask for any.
+    ice-username: ""
+    ice-password: ""
+    #Only accept relayed candidates, keeping the server address away from players. Needs a TURN server.
+    relay-only: false
   #Threshold for batching packets, in bytes. Only these packets will be compressed
   #Set to 0 to compress everything, -1 to disable.
   batch-threshold: 256

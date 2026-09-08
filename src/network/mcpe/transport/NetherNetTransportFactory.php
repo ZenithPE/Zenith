@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\transport;
 
+use altay\network\nethernet\Credentials;
+use altay\network\nethernet\IceServer;
 use altay\network\nethernet\NetherNetTransport;
 use altay\network\nethernet\ServerData;
 use altay\network\transport\Transport;
@@ -36,6 +38,9 @@ use const PHP_OS_FAMILY;
 
 final class NetherNetTransportFactory implements TransportFactory{
 
+	/**
+	 * @param string[] $iceServers
+	 */
 	public function __construct(
 		private int $networkId,
 		private string $motd,
@@ -45,7 +50,13 @@ final class NetherNetTransportFactory implements TransportFactory{
 		private int $port = NetherNetTransport::DISCOVERY_PORT,
 		private bool $onlineMode = false,
 		private int $signallingPort = 19132,
-		private ?string $identityKeyPath = null
+		private ?string $identityKeyPath = null,
+		private string $identityDomain = "self",
+		private bool $requireIdentity = false,
+		private array $iceServers = [],
+		private string $iceUsername = "",
+		private string $icePassword = "",
+		private bool $relayOnly = false
 	){}
 
 	public function getName() : string{
@@ -54,6 +65,17 @@ final class NetherNetTransportFactory implements TransportFactory{
 
 	public function getNetworkId() : int{
 		return $this->networkId;
+	}
+
+	private function credentials() : ?Credentials{
+		if($this->iceServers === []){
+			return null;
+		}
+		return new Credentials([new IceServer(
+			$this->iceServers,
+			$this->iceUsername !== "" ? $this->iceUsername : null,
+			$this->icePassword !== "" ? $this->icePassword : null
+		)]);
 	}
 
 	public function make(\Logger $logger) : Transport{
@@ -69,16 +91,20 @@ final class NetherNetTransportFactory implements TransportFactory{
 				acceptsOnlineAuth: $this->onlineMode,
 				acceptsSelfSignedAuth: !$this->onlineMode // lol what
 			),
-			$this->bindAddress,
-			$this->port,
-			//vanilla clients do not attach identity assertions to LAN offers, they only do so
-			//for Xbox Live session signaling so that means assertions are still verified when present
-			false,
-			null,
+			bindAddress: $this->bindAddress,
+			port: $this->port,
+			//vanilla clients do not attach identity assertions to the offers they broadcast on the
+			//local network, so holding them to one is left to the operator
+			requireIdentity: $this->requireIdentity,
+			credentials: $this->credentials(),
 			//the server list reaches a NetherNet server over HTTP on the server port, the same way
 			//vanilla does it: the entry's MOTD comes from a GET and the join posts its offer there
-			"$this->bindAddress:$this->signallingPort",
-			$this->identityKeyPath
+			endpointAddress: "$this->bindAddress:$this->signallingPort",
+			identityKeyPath: $this->identityKeyPath,
+			identityDomain: $this->identityDomain,
+			relayOnly: $this->relayOnly,
+			//a player who joins by address is signed in, so their client always signs its offer
+			requireEndpointIdentity: $this->onlineMode
 		);
 	}
 }
