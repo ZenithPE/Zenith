@@ -489,6 +489,7 @@ final class VanillaBlocks{
 	private static HardenedGlass $_mHARDENED_GLASS;
 	private static HardenedGlassPane $_mHARDENED_GLASS_PANE;
 	private static HayBale $_mHAY_BALE;
+	private static HeavyCore $_mHEAVY_CORE;
 	private static Opaque $_mHONEYCOMB;
 	private static HoneyBlock $_mHONEY_BLOCK;
 	private static Hopper $_mHOPPER;
@@ -1362,6 +1363,7 @@ final class VanillaBlocks{
 			"hardened_glass" => fn(HardenedGlass $v) => self::$_mHARDENED_GLASS = $v,
 			"hardened_glass_pane" => fn(HardenedGlassPane $v) => self::$_mHARDENED_GLASS_PANE = $v,
 			"hay_bale" => fn(HayBale $v) => self::$_mHAY_BALE = $v,
+			"heavy_core" => fn(HeavyCore $v) => self::$_mHEAVY_CORE = $v,
 			"honeycomb" => fn(Opaque $v) => self::$_mHONEYCOMB = $v,
 			"honey_block" => fn(HoneyBlock $v) => self::$_mHONEY_BLOCK = $v,
 			"hopper" => fn(Hopper $v) => self::$_mHOPPER = $v,
@@ -4033,6 +4035,11 @@ final class VanillaBlocks{
 	public static function HAY_BALE() : HayBale{
 		if(!isset(self::$_mHAY_BALE)){ self::init(); }
 		return clone self::$_mHAY_BALE;
+	}
+
+	public static function HEAVY_CORE() : HeavyCore{
+		if(!isset(self::$_mHEAVY_CORE)){ self::init(); }
+		return clone self::$_mHEAVY_CORE;
 	}
 
 	public static function HONEYCOMB() : Opaque{

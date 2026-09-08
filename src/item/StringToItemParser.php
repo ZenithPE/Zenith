@@ -746,6 +746,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("hardened_glass_pane", fn() => Blocks::HARDENED_GLASS_PANE());
 		$result->registerBlock("hay_bale", fn() => Blocks::HAY_BALE());
 		$result->registerBlock("hay_block", fn() => Blocks::HAY_BALE());
+		$result->registerBlock("heavy_core", fn() => Blocks::HEAVY_CORE());
 		$result->registerBlock("heavy_weighted_pressure_plate", fn() => Blocks::WEIGHTED_PRESSURE_PLATE_HEAVY());
 		$result->registerBlock("honey_block", fn() => Blocks::HONEY_BLOCK());
 		$result->registerBlock("honeycomb_block", fn() => Blocks::HONEYCOMB());

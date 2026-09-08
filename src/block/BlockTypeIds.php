@@ -896,8 +896,9 @@ final class BlockTypeIds{
 	public const POINTED_DRIPSTONE = 10863;
 	public const WILDFLOWERS = 10864;
 	public const KELP = 10865;
+	public const HEAVY_CORE = 10866;
 
-	public const FIRST_UNUSED_BLOCK_ID = 10866;
+	public const FIRST_UNUSED_BLOCK_ID = 10867;
 
 	private static int $nextDynamicId = self::FIRST_UNUSED_BLOCK_ID;
 
