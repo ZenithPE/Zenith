@@ -46,6 +46,7 @@ final class VanillaItems{
 	private static Item $_mAIR;
 	private static Item $_mAMETHYST_SHARD;
 	private static Apple $_mAPPLE;
+	private static Item $_mARMADILLO_SCUTE;
 	private static ArmorStand $_mARMOR_STAND;
 	private static Arrow $_mARROW;
 	private static BakedPotato $_mBAKED_POTATO;
@@ -420,6 +421,7 @@ final class VanillaItems{
 			"air" => fn(Item $v) => self::$_mAIR = $v,
 			"amethyst_shard" => fn(Item $v) => self::$_mAMETHYST_SHARD = $v,
 			"apple" => fn(Apple $v) => self::$_mAPPLE = $v,
+			"armadillo_scute" => fn(Item $v) => self::$_mARMADILLO_SCUTE = $v,
 			"armor_stand" => fn(ArmorStand $v) => self::$_mARMOR_STAND = $v,
 			"arrow" => fn(Arrow $v) => self::$_mARROW = $v,
 			"baked_potato" => fn(BakedPotato $v) => self::$_mBAKED_POTATO = $v,
@@ -820,6 +822,11 @@ final class VanillaItems{
 	public static function APPLE() : Apple{
 		if(!isset(self::$_mAPPLE)){ self::init(); }
 		return clone self::$_mAPPLE;
+	}
+
+	public static function ARMADILLO_SCUTE() : Item{
+		if(!isset(self::$_mARMADILLO_SCUTE)){ self::init(); }
+		return clone self::$_mARMADILLO_SCUTE;
 	}
 
 	public static function ARMOR_STAND() : ArmorStand{
