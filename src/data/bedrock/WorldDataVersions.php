@@ -62,7 +62,7 @@ final class WorldDataVersions{
 		1, //major
 		26, //minor
 		44, //patch
-		1, //revision
+		3, //revision
 		0 //is beta
 	];
 }

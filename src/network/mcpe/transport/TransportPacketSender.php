@@ -23,28 +23,32 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\network\mcpe\raklib;
+namespace pocketmine\network\mcpe\transport;
 
+use altay\network\transport\TransportSession;
 use pocketmine\network\mcpe\PacketSender;
 
-class RakLibPacketSender implements PacketSender{
+class TransportPacketSender implements PacketSender{
+	private const MCPE_PACKET_ID = "\xfe";
+
 	private bool $closed = false;
 
 	public function __construct(
-		private int $sessionId,
-		private RakLibInterface $handler
+		private TransportSession $session,
+		private TransportNetworkInterface $handler,
+		private bool $rakNetFraming
 	){}
 
 	public function send(string $payload, bool $immediate, ?int $receiptId) : void{
 		if(!$this->closed){
-			$this->handler->putPacket($this->sessionId, $payload, $immediate, $receiptId);
+			$this->session->sendPacket(($this->rakNetFraming ? self::MCPE_PACKET_ID : "") . $payload, $immediate, $receiptId);
 		}
 	}
 
 	public function close(string $reason = "unknown reason") : void{
 		if(!$this->closed){
 			$this->closed = true;
-			$this->handler->close($this->sessionId);
+			$this->handler->close($this->session->getId());
 		}
 	}
 }

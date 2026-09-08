@@ -138,7 +138,8 @@ class BlockTest extends TestCase{
 			$testedBlocks[$vanillaId] = true;
 
 			$vanillaHardness = round($propertiesTable[$vanillaId]["hardness"], 5);
-			$vanillaBlastResistance = round($propertiesTable[$vanillaId]["blastResistance"], 5) * 5;
+			//rounding after scaling, because scaling an already rounded value reintroduces the error it removed
+			$vanillaBlastResistance = round($propertiesTable[$vanillaId]["blastResistance"] * 5, 5);
 
 			$breakInfo = $block->getBreakInfo();
 			if($breakInfo->getHardness() !== $vanillaHardness){

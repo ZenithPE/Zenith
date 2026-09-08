@@ -358,6 +358,7 @@ final class VanillaBlocksInputs extends RegistrySource{
 
 		self::register("rail", fn(BID $id) => new Rail($id, "Rail", $railBreakInfo));
 		self::register("red_mushroom", fn(BID $id) => new RedMushroom($id, "Red Mushroom", new Info(BreakInfo::instant(), [Tags::POTTABLE_PLANTS])));
+		self::register("red_shrub", fn(BID $id) => new RedShrub($id, "Red Shrub", new Info(BreakInfo::instant(ToolType::SHEARS, 1))));
 		self::register("redstone", fn(BID $id) => new Redstone($id, "Redstone Block", new Info(BreakInfo::pickaxe(5.0, ToolTier::WOOD, 30.0))));
 		self::register("redstone_comparator", fn(BID $id) => new RedstoneComparator($id, "Redstone Comparator", new Info(BreakInfo::instant())), TileComparator::class);
 		self::register("redstone_lamp", fn(BID $id) => new RedstoneLamp($id, "Redstone Lamp", new Info(new BreakInfo(0.3))));
@@ -372,6 +373,8 @@ final class VanillaBlocksInputs extends RegistrySource{
 
 		self::register("sea_lantern", fn(BID $id) => new SeaLantern($id, "Sea Lantern", new Info(new BreakInfo(0.3))));
 		self::register("sea_pickle", fn(BID $id) => new SeaPickle($id, "Sea Pickle", new Info(BreakInfo::instant())));
+		self::register("shelf_mushroom", fn(BID $id) => new ShelfMushroom($id, "Shelf Mushroom", new Info(BreakInfo::instant())));
+		self::register("straw_bed", fn(BID $id) => new StrawBed($id, "Straw Bed", new Info(new BreakInfo(0.2))));
 		self::register("mob_head", fn(BID $id) => new MobHead($id, "Mob Head", new Info(new BreakInfo(1.0), enchantmentTags: [EnchantmentTags::MASK])), TileMobHead::class);
 		self::register("slime", fn(BID $id) => new Slime($id, "Slime Block", new Info(BreakInfo::instant())));
 		self::register("snow", fn(BID $id) => new Snow($id, "Snow Block", new Info(BreakInfo::shovel(0.2, ToolTier::WOOD))));
@@ -545,9 +548,15 @@ final class VanillaBlocksInputs extends RegistrySource{
 		self::register("stained_hardened_glass", fn(BID $id) => new StainedHardenedGlass($id, "Stained Hardened Glass", $hardenedGlassBreakInfo));
 		self::register("stained_hardened_glass_pane", fn(BID $id) => new StainedHardenedGlassPane($id, "Stained Hardened Glass Pane", $hardenedGlassBreakInfo));
 		self::register("carpet", fn(BID $id) => new Carpet($id, "Carpet", new Info(new BreakInfo(0.1))));
-		self::register("concrete", fn(BID $id) => new Concrete($id, "Concrete", new Info(BreakInfo::pickaxe(1.8, ToolTier::WOOD))));
+		$concreteBreakInfo = new Info(BreakInfo::pickaxe(1.8, ToolTier::WOOD));
+		self::register("concrete", fn(BID $id) => new Concrete($id, "Concrete", $concreteBreakInfo));
+		//cut concrete has a much lower blast resistance than the full block
+		$concreteCutBreakInfo = new Info(BreakInfo::pickaxe(1.8, ToolTier::WOOD, 1.8));
+		self::register("concrete_slab", fn(BID $id) => new ConcreteSlab($id, "Concrete", $concreteCutBreakInfo));
+		self::register("concrete_stairs", fn(BID $id) => new ConcreteStair($id, "Concrete Stairs", $concreteCutBreakInfo));
 		self::register("concrete_powder", fn(BID $id) => new ConcretePowder($id, "Concrete Powder", new Info(BreakInfo::shovel(0.5))));
-		self::register("wool", fn(BID $id) => new Wool($id, "Wool", new Info(new class(0.8, ToolType::SHEARS) extends BreakInfo{
+
+		$makeWoolBreakInfo = fn(?float $blastResistance = null) => new class(0.8, ToolType::SHEARS, 0, $blastResistance) extends BreakInfo{
 			public function getBreakTime(Item $item) : float{
 				$time = parent::getBreakTime($item);
 				if($item->getBlockToolType() === ToolType::SHEARS){
@@ -556,7 +565,12 @@ final class VanillaBlocksInputs extends RegistrySource{
 
 				return $time;
 			}
-		})));
+		};
+		self::register("wool", fn(BID $id) => new Wool($id, "Wool", new Info($makeWoolBreakInfo())));
+		//cut wool has a much lower blast resistance than the full block
+		$woolCutBreakInfo = new Info($makeWoolBreakInfo(0.8));
+		self::register("wool_slab", fn(BID $id) => new WoolSlab($id, "Wool", $woolCutBreakInfo));
+		self::register("wool_stairs", fn(BID $id) => new WoolStair($id, "Wool Stairs", $woolCutBreakInfo));
 
 		self::register("end_stone_brick_wall", fn(BID $id) => new Wall($id, "End Stone Brick Wall", new Info(BreakInfo::pickaxe(3.0, ToolTier::WOOD, 45.0))));
 
@@ -652,6 +666,7 @@ final class VanillaBlocksInputs extends RegistrySource{
 			WoodType::CHERRY => VanillaItems::CHERRY_SIGN(...),
 			WoodType::PALE_OAK => VanillaItems::PALE_OAK_SIGN(...),
 			WoodType::BAMBOO => VanillaItems::BAMBOO_SIGN(...),
+			WoodType::POPLAR => VanillaItems::POPLAR_SIGN(...),
 		};
 	}
 
@@ -672,6 +687,7 @@ final class VanillaBlocksInputs extends RegistrySource{
 			WoodType::CHERRY => VanillaItems::CHERRY_HANGING_SIGN(...),
 			WoodType::PALE_OAK => VanillaItems::PALE_OAK_HANGING_SIGN(...),
 			WoodType::BAMBOO => VanillaItems::BAMBOO_HANGING_SIGN(...),
+			WoodType::POPLAR => VanillaItems::POPLAR_HANGING_SIGN(...),
 		};
 	}
 

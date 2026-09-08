@@ -36,6 +36,8 @@ use pocketmine\network\mcpe\protocol\types\PlayerAction;
 use pocketmine\player\Player;
 
 class DeathPacketHandler extends PacketHandler{
+	use PacketViolationWarningTrait;
+
 	public function __construct(
 		private Player $player,
 		private NetworkSession $session,

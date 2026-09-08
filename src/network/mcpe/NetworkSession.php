@@ -225,7 +225,9 @@ class NetworkSession{
 		private Compressor $compressor,
 		private TypeConverter $typeConverter,
 		private string $ip,
-		private int $port
+		private int $port,
+		private bool $enableEncryption = true,
+		private ?string $expectedIdentityPublicKey = null
 	){
 		$this->logger = new \PrefixedLogger($this->server->getLogger(), $this->getLogPrefix());
 
@@ -911,6 +913,8 @@ class NetworkSession{
 				$error = "Expected XUID but none found";
 			}elseif($clientPubKey === null){
 				$error = "Missing client public key"; //failsafe
+			}elseif($this->expectedIdentityPublicKey !== null && base64_encode($clientPubKey) !== $this->expectedIdentityPublicKey){
+				$error = "Login identity does not match the transport identity assertion";
 			}
 		}
 
@@ -984,7 +988,7 @@ class NetworkSession{
 			}
 		}
 
-		if(EncryptionContext::$ENABLED){
+		if(EncryptionContext::$ENABLED && $this->enableEncryption){
 			$this->server->getAsyncPool()->submitTask(new PrepareEncryptionTask($clientPubKey, function(string $encryptionKey, string $handshakeJwt) : void{
 				if(!$this->connected){
 					return;

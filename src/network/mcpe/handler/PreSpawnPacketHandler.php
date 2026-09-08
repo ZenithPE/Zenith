@@ -25,12 +25,15 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\handler;
 
+use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\cache\CraftingDataCache;
 use pocketmine\network\mcpe\cache\StaticPacketCache;
 use pocketmine\network\mcpe\InventoryManager;
 use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\ItemRegistryPacket;
+use pocketmine\network\mcpe\protocol\JigsawStructureDataPacket;
 use pocketmine\network\mcpe\protocol\PlayerAuthInputPacket;
 use pocketmine\network\mcpe\protocol\RequestChunkRadiusPacket;
 use pocketmine\network\mcpe\protocol\ServerboundLoadingScreenPacket;
@@ -38,8 +41,8 @@ use pocketmine\network\mcpe\protocol\StartGamePacket;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\BoolGameRule;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
-use pocketmine\network\mcpe\protocol\types\DimensionIds;
 use pocketmine\network\mcpe\protocol\types\Experiments;
+use pocketmine\network\mcpe\protocol\types\DimensionIds;
 use pocketmine\network\mcpe\protocol\types\LevelSettings;
 use pocketmine\network\mcpe\protocol\types\NetworkPermissions;
 use pocketmine\network\mcpe\protocol\types\PlayerMovementSettings;
@@ -59,6 +62,8 @@ use function sprintf;
 #[SilentDiscard(PlayerAuthInputPacket::class, comment: "Spammed after StartGame even though player has no controls")]
 #[SilentDiscard(ServerboundLoadingScreenPacket::class, "Not needed")]
 class PreSpawnPacketHandler extends PacketHandler{
+	use PacketViolationWarningTrait;
+
 	public function __construct(
 		private Server $server,
 		private Player $player,
@@ -74,8 +79,16 @@ class PreSpawnPacketHandler extends PacketHandler{
 
 			$typeConverter = $this->session->getTypeConverter();
 
+			$this->session->getLogger()->debug("Preparing JigsawStructureDataPacket");
+			$this->session->sendDataPacket(JigsawStructureDataPacket::create(new CacheableNbt(CompoundTag::create()
+				->setTag("processors", new ListTag([], NBT::TAG_Compound))
+				->setTag("template_pools", new ListTag([], NBT::TAG_Compound))
+				->setTag("jigsaws", new ListTag([], NBT::TAG_Compound))
+				->setTag("structure_sets", new ListTag([], NBT::TAG_Compound))
+			)), true); // TODO: Custom jigsaw structure support
+
 			$this->session->getLogger()->debug("Preparing VoxelShapesPacket");
-			$this->session->sendDataPacket(VoxelShapesPacket::create([], [], 0), true); // TODO: Voxel shapes support
+			$this->session->sendDataPacket(StaticPacketCache::getInstance()->getVoxelShapes(), true); // TODO: Custom voxel shapes support
 
 			$this->session->getLogger()->debug("Preparing StartGamePacket");
 			$levelSettings = new LevelSettings();
@@ -117,11 +130,11 @@ class PreSpawnPacketHandler extends PacketHandler{
 				sprintf("%s %s", VersionInfo::NAME, VersionInfo::VERSION()->getFullVersion(true)),
 				Uuid::fromString(Uuid::NIL),
 				false,
-				true, //blockNetworkIdsAreHashes - the dictionary uses hashed network IDs from block_palette.nbt
+				true, //the dictionary uses hashed network IDs from block_palette.nbt
 				new NetworkPermissions(disableClientSounds: true),
 				null,
 				new ServerTelemetryData("", "", "", ""),
-				[],
+				StaticPacketCache::getInstance()->getBlockDefinitions(),
 				0
 			));
 
@@ -132,7 +145,7 @@ class PreSpawnPacketHandler extends PacketHandler{
 			$this->session->sendDataPacket(StaticPacketCache::getInstance()->getAvailableActorIdentifiers());
 
 			$this->session->getLogger()->debug("Sending biome definitions");
-			$this->session->sendDataPacket(StaticPacketCache::getInstance()->getBiomeDefs());
+			$this->session->sendDataPacket(StaticPacketCache::getInstance()->getBiomeDefinitionList());
 
 			$this->session->getLogger()->debug("Sending attributes");
 			$this->session->getEntityEventBroadcaster()->syncAttributes([$this->session], $this->player, $this->player->getAttributeMap()->getAll());

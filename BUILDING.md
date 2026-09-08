@@ -8,7 +8,7 @@
 ## Custom PHP binaries
 Because Altay requires several non-standard PHP extensions and configuration, Zenith provides scripts to build custom binaries for running Zenith, as well as prebuilt binaries.
 
-- [Prebuilt binaries](https://github.com/pmmp/PHP-Binaries/releases)
+- [Prebuilt binaries](https://github.com/altayofficial/PHP-Binaries/releases)
 - [Compile scripts](https://github.com/pmmp/php-build-scripts) are provided as a submodule in the path `build/php`
 
 If you use a custom binary, you'll need to replace `composer` usages in this guide with `path/to/your/php path/to/your/composer.phar`.

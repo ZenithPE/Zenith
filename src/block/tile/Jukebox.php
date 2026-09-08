@@ -36,12 +36,26 @@ class Jukebox extends Spawnable{
 
 	private ?Record $record = null;
 
+	private ?int $soundHandle = null;
+
 	public function getRecord() : ?Record{
 		return $this->record;
 	}
 
 	public function setRecord(?Record $record) : void{
 		$this->record = $record;
+	}
+
+	/**
+	 * Returns the handle of the record sound currently playing, or null if nothing is playing. This is only known at
+	 * runtime, since the client forgets about the sound as soon as it leaves the area.
+	 */
+	public function getSoundHandle() : ?int{
+		return $this->soundHandle;
+	}
+
+	public function setSoundHandle(?int $soundHandle) : void{
+		$this->soundHandle = $soundHandle;
 	}
 
 	public function readSaveData(CompoundTag $nbt) : void{
@@ -67,6 +81,9 @@ class Jukebox extends Spawnable{
 	}
 
 	protected function onBlockDestroyedHook() : void{
-		$this->position->getWorld()->addSound($this->position, new RecordStopSound());
+		if($this->soundHandle !== null){
+			$this->position->getWorld()->addSound($this->position, new RecordStopSound($this->soundHandle));
+			$this->soundHandle = null;
+		}
 	}
 }

@@ -302,7 +302,8 @@ final class BlockStateDeserializerHelper{
 	public static function decodeStairs(Stair $block, BlockStateReader $in) : Stair{
 		return $block
 			->setUpsideDown($in->readBool(BlockStateNames::UPSIDE_DOWN_BIT))
-			->setFacing($in->readWeirdoHorizontalFacing());
+			->setFacing($in->readWeirdoHorizontalFacing())
+			->setShape($in->readStairShape());
 	}
 
 	/** @throws BlockStateDeserializeException */

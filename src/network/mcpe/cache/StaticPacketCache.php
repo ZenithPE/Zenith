@@ -35,7 +35,11 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\mcpe\protocol\AvailableActorIdentifiersPacket;
 use pocketmine\network\mcpe\protocol\BiomeDefinitionListPacket;
 use pocketmine\network\mcpe\protocol\types\biome\BiomeDefinitionEntry;
+use pocketmine\network\mcpe\protocol\types\BlockPaletteEntry;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
+use pocketmine\network\mcpe\protocol\types\SerializableVoxelCells;
+use pocketmine\network\mcpe\protocol\types\SerializableVoxelShape;
+use pocketmine\network\mcpe\protocol\VoxelShapesPacket;
 use pocketmine\utils\Filesystem;
 use pocketmine\utils\SingletonTrait;
 use function zlib_decode;
@@ -109,23 +113,207 @@ class StaticPacketCache{
 		return $entries;
 	}
 
+	/**
+	 * Loads the definitions of the blocks the game drives from data rather than implementing natively,
+	 * from a bedrock-network-data block_definitions.nbt. A client that never receives one of these
+	 * falls back to the raw identifier, draws no icon and refuses to place the block.
+	 *
+	 * @return list<BlockPaletteEntry>
+	 */
+	private static function loadBlockDefinitionsFromFile(string $filePath) : array{
+		$blocks = self::loadCompoundFromFile($filePath)->getListTag("blocks") ??
+			throw new SavedDataLoadingException("$filePath missing blocks");
+
+		$definitions = [];
+		foreach($blocks as $blockTag){
+			if(!($blockTag instanceof CompoundTag)){
+				throw new SavedDataLoadingException("blocks should only contain compounds");
+			}
+			$definitions[] = new BlockPaletteEntry(
+				$blockTag->getString("name"),
+				new CacheableNbt($blockTag->getCompoundTag("properties") ??
+					throw new SavedDataLoadingException("Block definition is missing properties"))
+			);
+		}
+
+		return $definitions;
+	}
+
+	/**
+	 * The client keeps its own copy of the vanilla shapes, but it only finds one by the name the server
+	 * gives it, so the names have to travel with the shapes. A shape without a name is still sent,
+	 * because the ones that have a name are found by their position in the list.
+	 *
+	 * @return array{list<SerializableVoxelShape>, array<string, int>}
+	 */
+	private static function loadVoxelShapesFromFile(string $filePath) : array{
+		$data = json_decode(Filesystem::fileGetContents($filePath), true);
+
+		if(!is_array($data) || !array_is_list($data)){
+			throw new SavedDataLoadingException($filePath . " should contain vanilla voxel shape list");
+		}
+
+		$shapes = [];
+		$nameMap = [];
+
+		foreach($data as $shape){
+			if(!is_array($shape)){
+				throw new SavedDataLoadingException($filePath . " contains an invalid voxel shape");
+			}
+
+			$identifier = $shape["identifier"] ?? null;
+			if(is_string($identifier)){
+				$nameMap[$identifier] = count($shapes);
+			}
+
+			$boxes = $shape["boxes"] ?? [];
+
+			if(!is_array($boxes) || !array_is_list($boxes)){
+				throw new SavedDataLoadingException($filePath . " contains an invalid voxel shape boxes list");
+			}
+
+			if($boxes === []){
+				//an empty shape still carries one cutting plane per axis, the same as the game sends
+				$voxelShape = new SerializableVoxelShape(
+					new SerializableVoxelCells(0, 0, 0, []),
+					[0.0],
+					[0.0],
+					[0.0]
+				);
+			}else{
+				$xCoordinates = [];
+				$yCoordinates = [];
+				$zCoordinates = [];
+
+				foreach($boxes as $box){
+					if(
+						!is_array($box) ||
+						count($box) !== 2 ||
+						!isset($box[0], $box[1]) ||
+						!is_array($box[0]) ||
+						!is_array($box[1]) ||
+						count($box[0]) !== 3 ||
+						count($box[1]) !== 3
+					){
+						throw new SavedDataLoadingException($filePath . " contains an invalid voxel box");
+					}
+
+					$min = $box[0];
+					$max = $box[1];
+
+					if(
+						!is_int($min[0]) || !is_int($min[1]) || !is_int($min[2]) ||
+						!is_int($max[0]) || !is_int($max[1]) || !is_int($max[2])
+					){
+						throw new SavedDataLoadingException($filePath . " contains an invalid voxel box coordinate");
+					}
+
+					$xCoordinates[] = $min[0] / 16.0;
+					$xCoordinates[] = $max[0] / 16.0;
+					$yCoordinates[] = $min[1] / 16.0;
+					$yCoordinates[] = $max[1] / 16.0;
+					$zCoordinates[] = $min[2] / 16.0;
+					$zCoordinates[] = $max[2] / 16.0;
+				}
+
+				$xCoordinates = array_values(array_unique($xCoordinates, SORT_REGULAR));
+				$yCoordinates = array_values(array_unique($yCoordinates, SORT_REGULAR));
+				$zCoordinates = array_values(array_unique($zCoordinates, SORT_REGULAR));
+
+				sort($xCoordinates, SORT_NUMERIC);
+				sort($yCoordinates, SORT_NUMERIC);
+				sort($zCoordinates, SORT_NUMERIC);
+
+				$resX = count($xCoordinates) - 1;
+				$resY = count($yCoordinates) - 1;
+				$resZ = count($zCoordinates) - 1;
+
+				$storage = [];
+
+				for($i = 0, $storageSize = intdiv($resX * $resY * $resZ + 7, 8); $i < $storageSize; ++$i){
+					$storage[] = 0;
+				}
+
+				for($z = 0; $z < $resZ; ++$z){
+					for($y = 0; $y < $resY; ++$y){
+						for($x = 0; $x < $resX; ++$x){
+							$midX = ($xCoordinates[$x] + $xCoordinates[$x + 1]) / 2.0;
+							$midY = ($yCoordinates[$y] + $yCoordinates[$y + 1]) / 2.0;
+							$midZ = ($zCoordinates[$z] + $zCoordinates[$z + 1]) / 2.0;
+
+							foreach($boxes as $box){
+								$min = $box[0];
+								$max = $box[1];
+
+								if(
+									$midX >= $min[0] / 16.0 && $midX <= $max[0] / 16.0 &&
+									$midY >= $min[1] / 16.0 && $midY <= $max[1] / 16.0 &&
+									$midZ >= $min[2] / 16.0 && $midZ <= $max[2] / 16.0
+								){
+									$index = $z + ($y * $resZ) + ($x * $resZ * $resY);
+									$storage[intdiv($index, 8)] |= 1 << ($index % 8);
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				/** @var list<int> $storage */
+				$storage = array_values($storage);
+
+				$voxelShape = new SerializableVoxelShape(
+					new SerializableVoxelCells($resX, $resY, $resZ, $storage),
+					$xCoordinates,
+					$yCoordinates,
+					$zCoordinates
+				);
+			}
+
+			$shapes[] = $voxelShape;
+		}
+
+		return [$shapes, $nameMap];
+	}
+
 	private static function make() : self{
+		[$voxelShapes, $voxelShapeNames] = self::loadVoxelShapesFromFile(BedrockDataFiles::VOXEL_SHAPES_JSON);
+
 		return new self(
 			BiomeDefinitionListPacket::fromDefinitions(self::loadBiomeDefinitionModel(BedrockDataFiles::BIOME_DEFINITIONS_NBT)),
-			AvailableActorIdentifiersPacket::create(new CacheableNbt(self::loadCompoundFromFile(BedrockDataFiles::ENTITY_IDENTIFIERS_NBT)))
+			AvailableActorIdentifiersPacket::create(new CacheableNbt(self::loadCompoundFromFile(BedrockDataFiles::ENTITY_IDENTIFIERS_NBT))),
+			VoxelShapesPacket::create($voxelShapes, $voxelShapeNames, 0), //no custom shapes, only the vanilla ones
+			self::loadBlockDefinitionsFromFile(BedrockDataFiles::BLOCK_DEFINITIONS_NBT)
 		);
 	}
 
+	/**
+	 * @param BlockPaletteEntry[] $blockDefinitions
+	 * @phpstan-param list<BlockPaletteEntry> $blockDefinitions
+	 */
 	public function __construct(
-		private BiomeDefinitionListPacket $biomeDefs,
-		private AvailableActorIdentifiersPacket $availableActorIdentifiers
+		private BiomeDefinitionListPacket $biomeDefinitionList,
+		private AvailableActorIdentifiersPacket $availableActorIdentifiers,
+		private VoxelShapesPacket $voxelShapesPacket,
+		private array $blockDefinitions
 	){}
 
-	public function getBiomeDefs() : BiomeDefinitionListPacket{
-		return $this->biomeDefs;
+	public function getBiomeDefinitionList() : BiomeDefinitionListPacket{
+		return $this->biomeDefinitionList;
 	}
 
 	public function getAvailableActorIdentifiers() : AvailableActorIdentifiersPacket{
 		return $this->availableActorIdentifiers;
+	}
+
+	public function getVoxelShapes() : VoxelShapesPacket {
+		return $this->voxelShapesPacket;
+	}
+
+	/**
+	 * @return list<BlockPaletteEntry>
+	 */
+	public function getBlockDefinitions() : array{
+		return $this->blockDefinitions;
 	}
 }

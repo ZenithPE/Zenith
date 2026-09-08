@@ -50,10 +50,12 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\mcpe\EntityEventBroadcaster;
 use pocketmine\network\mcpe\NetworkBroadcastUtils;
+use pocketmine\network\mcpe\protocol\SetActorLinkPacket;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\MoveActorAbsolutePacket;
 use pocketmine\network\mcpe\protocol\SetActorMotionPacket;
 use pocketmine\network\mcpe\protocol\types\entity\Attribute as NetworkAttribute;
+use pocketmine\network\mcpe\protocol\types\entity\EntityLink;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
 use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
@@ -82,6 +84,8 @@ use function fmod;
 use function get_class;
 use function min;
 use function sin;
+use function array_key_first;
+use function array_values;
 use function spl_object_id;
 use const M_PI_2;
 
@@ -119,6 +123,14 @@ abstract class Entity{
 	private EntityMetadataCollection $networkProperties;
 
 	protected ?EntityDamageEvent $lastDamageCause = null;
+
+	private ?Entity $vehicle = null;
+
+	/**
+	 * @var Entity[]
+	 * @phpstan-var array<int, Entity>
+	 */
+	private array $passengers = [];
 
 	/** @var Block[]|null */
 	protected ?array $blocksAround = null;
@@ -1028,6 +1040,7 @@ abstract class Entity{
 		}
 
 		$this->updateMovement();
+		$this->updatePassengerPositions();
 
 		Timings::$entityBaseTick->startTiming();
 		$hasUpdate = $this->entityBaseTick($tickDiff);
@@ -1133,6 +1146,127 @@ abstract class Entity{
 	 */
 	public function onInteract(Player $player, Vector3 $clickPos) : bool{
 		return false;
+	}
+
+	/**
+	 * Returns the entity this one is riding, if any.
+	 */
+	public function getVehicle() : ?Entity{
+		return $this->vehicle;
+	}
+
+	/**
+	 * @return Entity[]
+	 * @phpstan-return list<Entity>
+	 */
+	public function getPassengers() : array{
+		return array_values($this->passengers);
+	}
+
+	public function isRiding() : bool{
+		return $this->vehicle !== null;
+	}
+
+	/**
+	 * Returns where a passenger sits relative to this entity's position. Called with null to ask where a
+	 * rider would sit, which is what the client is told so that it can draw one.
+	 */
+	public function getSeatPosition(?Entity $passenger = null) : Vector3{
+		return new Vector3(0, $this->size->getHeight(), 0);
+	}
+
+	/**
+	 * Seats the given entity on this one. Fails if either entity is gone, if they are in different worlds,
+	 * if the passenger is already riding something, or if the two are already linked further up the chain,
+	 * which would leave a vehicle riding itself.
+	 */
+	public function addPassenger(Entity $passenger) : bool{
+		if($this->closed || $passenger->closed || $passenger === $this || $passenger->vehicle !== null){
+			return false;
+		}
+		if(!$this->location->isValid() || !$passenger->location->isValid() || $this->getWorld() !== $passenger->getWorld()){
+			return false;
+		}
+		for($vehicle = $this->vehicle; $vehicle !== null; $vehicle = $vehicle->vehicle){
+			if($vehicle === $passenger){
+				return false;
+			}
+		}
+
+		$this->passengers[spl_object_id($passenger)] = $passenger;
+		$passenger->vehicle = $this;
+		$passenger->networkPropertiesDirty = true;
+		$passenger->setPosition($this->location->addVector($this->getSeatPosition($passenger)));
+
+		$this->broadcastLink($passenger, $this->getLinkType($passenger));
+
+		return true;
+	}
+
+	/**
+	 * Takes the given entity off this one and stands it back up where the vehicle is. The passenger is
+	 * teleported rather than moved, because its client has been drawing it in the seat and has to be told
+	 * where it really ended up.
+	 */
+	public function removePassenger(Entity $passenger) : bool{
+		$key = spl_object_id($passenger);
+		if(!isset($this->passengers[$key])){
+			return false;
+		}
+
+		unset($this->passengers[$key]);
+		$passenger->vehicle = null;
+		$passenger->networkPropertiesDirty = true;
+
+		$this->broadcastLink($passenger, EntityLink::TYPE_REMOVE);
+
+		if(!$passenger->closed && $passenger->location->isValid()){
+			$passenger->teleport($this->location->addVector($this->getSeatPosition($passenger)));
+		}
+
+		return true;
+	}
+
+	/**
+	 * Carries the passengers along when this entity has moved. Nothing is done while the vehicle stands
+	 * still, so a passenger is never fought over with the client that is already drawing it in its seat.
+	 */
+	private function updatePassengerPositions() : void{
+		if($this->passengers === [] || $this->location->equals($this->lastLocation)){
+			return;
+		}
+
+		foreach($this->passengers as $passenger){
+			$passenger->setPosition($this->location->addVector($this->getSeatPosition($passenger)));
+		}
+	}
+
+	private function getLinkType(Entity $passenger) : int{
+		return array_key_first($this->passengers) === spl_object_id($passenger) ? EntityLink::TYPE_RIDER : EntityLink::TYPE_PASSENGER;
+	}
+
+	private function broadcastLink(Entity $passenger, int $type) : void{
+		$link = new EntityLink($this->getId(), $passenger->getId(), $type, true, false, 0.0);
+		$targets = $this->hasSpawned + $passenger->hasSpawned;
+		if($passenger instanceof Player){
+			$targets[spl_object_id($passenger)] = $passenger;
+		}
+		NetworkBroadcastUtils::broadcastPackets($targets, [SetActorLinkPacket::create($link)]);
+	}
+
+	/**
+	 * @return EntityLink[]
+	 * @phpstan-return list<EntityLink>
+	 */
+	private function getNetworkLinks() : array{
+		$links = [];
+		foreach($this->passengers as $passenger){
+			$links[] = new EntityLink($this->getId(), $passenger->getId(), $this->getLinkType($passenger), true, false, 0.0);
+		}
+		if($this->vehicle !== null){
+			$links[] = new EntityLink($this->vehicle->getId(), $this->getId(), $this->vehicle->getLinkType($this), true, false, 0.0);
+		}
+		return $links;
 	}
 
 	public function isUnderwater() : bool{
@@ -1531,7 +1665,7 @@ abstract class Entity{
 			}, $this->attributeMap->getAll()),
 			$this->getAllNetworkData(),
 			new PropertySyncData([], []),
-			[] //TODO: entity links
+			$this->getNetworkLinks()
 		));
 	}
 
@@ -1641,6 +1775,10 @@ abstract class Entity{
 	 * because it may be needed by descendent classes.
 	 */
 	protected function onDispose() : void{
+		$this->vehicle?->removePassenger($this);
+		foreach($this->getPassengers() as $passenger){
+			$this->removePassenger($passenger);
+		}
 		$this->despawnFromAll();
 		if($this->location->isValid()){
 			$this->getWorld()->removeEntity($this);
@@ -1705,6 +1843,10 @@ abstract class Entity{
 		$properties->setString(EntityMetadataProperties::NAMETAG, $this->nameTag);
 		$properties->setString(EntityMetadataProperties::SCORE_TAG, $this->scoreTag);
 		$properties->setByte(EntityMetadataProperties::COLOR, 0);
+		if($this->vehicle !== null){
+			//the seat travels on the rider rather than on the vehicle, which is how the game sends it
+			$properties->setVector3(EntityMetadataProperties::RIDER_SEAT_POSITION, $this->vehicle->getSeatPosition($this));
+		}
 
 		$properties->setGenericFlag(EntityMetadataFlags::AFFECTED_BY_GRAVITY, $this->gravityEnabled);
 		$properties->setGenericFlag(EntityMetadataFlags::CAN_CLIMB, $this->canClimb);

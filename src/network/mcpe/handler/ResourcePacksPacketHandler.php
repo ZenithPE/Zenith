@@ -56,6 +56,8 @@ use function substr;
  * packs to the client.
  */
 class ResourcePacksPacketHandler extends PacketHandler{
+	use PacketViolationWarningTrait;
+
 	private const PACK_CHUNK_SIZE = 256 * 1024; //256KB
 
 	/**
@@ -69,6 +71,7 @@ class ResourcePacksPacketHandler extends PacketHandler{
 	 * correctly, unfortunately there doesn't seem to be a better way to do this
 	 */
 	private const CHEMISTRY_RESOURCE_PACKS = [
+		["d34cfa4b-2ad1-453d-a0db-668b429a3ea0", "1.26.40"], // temp, pretty dumb stuff i struggled here
 		["b41c2785-c512-4a49-af56-3a87afd47c57", "1.21.30"],
 		["a4df0cb3-17be-4163-88d7-fcf7002b935d", "1.21.20"],
 		["d19adffe-a2e1-4b02-8436-ca4583368c89", "1.21.10"],
@@ -229,6 +232,9 @@ class ResourcePacksPacketHandler extends PacketHandler{
 				break;
 			case ResourcePackClientResponsePacket::STATUS_COMPLETED:
 				$this->session->getLogger()->debug("Resource packs sequence completed");
+				if($this->session->getHandler() === $this){
+					$this->session->setHandler(null);
+				}
 				($this->completionCallback)();
 				break;
 			default:

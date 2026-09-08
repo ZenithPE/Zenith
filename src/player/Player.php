@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace pocketmine\player;
 
 use pocketmine\block\BaseSign;
-use pocketmine\block\Bed;
+use pocketmine\block\BedBase;
 use pocketmine\block\BlockTypeTags;
 use pocketmine\block\RespawnAnchor;
 use pocketmine\block\UnknownBlock;
@@ -1182,15 +1182,19 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer, Nev
 			return false;
 		}
 
-		if($b instanceof Bed){
+		$setsRespawnPoint = true;
+		if($b instanceof BedBase){
 			$b->setOccupied();
 			$this->getWorld()->setBlock($pos, $b);
+			$setsRespawnPoint = $b->setsRespawnPoint();
 		}
 
 		$this->sleeping = $pos;
 		$this->networkPropertiesDirty = true;
 
-		$this->setSpawn($pos);
+		if($setsRespawnPoint){
+			$this->setSpawn($pos);
+		}
 
 		$this->getWorld()->setSleepTicks(60);
 
@@ -1200,11 +1204,15 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer, Nev
 	public function stopSleep() : void{
 		if($this->sleeping instanceof Vector3){
 			$b = $this->getWorld()->getBlock($this->sleeping);
-			if($b instanceof Bed){
+			if($b instanceof BedBase){
 				$b->setOccupied(false);
 				$this->getWorld()->setBlock($this->sleeping, $b);
 			}
 			(new PlayerBedLeaveEvent($this, $b))->call();
+
+			if($b instanceof BedBase){
+				$b->onSleepEnd($this);
+			}
 
 			$this->sleeping = null;
 			$this->networkPropertiesDirty = true;
@@ -1393,6 +1401,10 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer, Nev
 	}
 
 	private function actuallyHandleMovement(Vector3 $newPos) : void{
+		if($this->isRiding()){
+			//a seated player is carried by its vehicle, so its own movement is the client guessing where the seat is
+			return;
+		}
 		$this->moveRateLimit--;
 		if($this->moveRateLimit < 0){
 			return;
@@ -2959,7 +2971,7 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer, Nev
 	}
 
 	public function onBlockChanged(Vector3 $block) : void{
-		if($this->sleeping !== null && $block->equals($this->sleeping) && !($this->getWorld()->getBlock($block) instanceof Bed)){
+		if($this->sleeping !== null && $block->equals($this->sleeping) && !($this->getWorld()->getBlock($block) instanceof BedBase)){
 			$this->logger->debug("Bed was changed or deleted, aborting sleep");
 			$this->stopSleep();
 		}

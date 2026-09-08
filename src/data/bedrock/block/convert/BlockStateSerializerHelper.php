@@ -225,7 +225,8 @@ final class BlockStateSerializerHelper{
 	public static function encodeStairs(Stair $block, Writer $out) : Writer{
 		return $out
 			->writeBool(BlockStateNames::UPSIDE_DOWN_BIT, $block->isUpsideDown())
-			->writeWeirdoHorizontalFacing($block->getFacing());
+			->writeWeirdoHorizontalFacing($block->getFacing())
+			->writeStairShape($block->getShape());
 	}
 
 	public static function encodeStem(Stem $block, Writer $out) : Writer{

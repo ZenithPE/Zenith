@@ -137,7 +137,7 @@ jobs:
       - name: Generate PHP binary download URL
         id: php-binary-url
         run: |
-          echo PHP_BINARY_URL="${{ github.server_url }}/pmmp/PHP-Binaries/releases/tag/pm${{ steps.get-version.outputs.MAJOR_VERSION }}-php-${{ env.PHP_VERSION }}-latest" >> $GITHUB_OUTPUT
+          echo PHP_BINARY_URL="${{ github.server_url }}/altayofficial/PHP-Binaries/releases/tag/pm${{ steps.get-version.outputs.MAJOR_VERSION }}-php-${{ env.PHP_VERSION }}-latest" >> $GITHUB_OUTPUT
 
       - name: Generate build info
         run: |

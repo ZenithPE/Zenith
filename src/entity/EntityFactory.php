@@ -35,6 +35,7 @@ use pocketmine\data\bedrock\PotionTypeIds;
 use pocketmine\data\SavedDataLoadingException;
 use pocketmine\entity\EntityDataHelper as Helper;
 use pocketmine\entity\object\AreaEffectCloud;
+use pocketmine\entity\object\Cushion;
 use pocketmine\entity\object\EndCrystal;
 use pocketmine\entity\object\ExperienceOrb;
 use pocketmine\entity\object\FallingBlock;
@@ -97,6 +98,10 @@ final class EntityFactory{
 		$this->register(Arrow::class, function(World $world, CompoundTag $nbt) : Arrow{
 			return new Arrow(Helper::parseLocation($nbt, $world), null, $nbt->getByte(Arrow::TAG_CRIT, 0) === 1, $nbt);
 		}, ['Arrow', 'minecraft:arrow']);
+
+		$this->register(Cushion::class, function(World $world, CompoundTag $nbt) : Cushion{
+			return new Cushion(Helper::parseLocation($nbt, $world), $nbt);
+		}, ['Cushion', 'minecraft:cushion']);
 
 		$this->register(Egg::class, function(World $world, CompoundTag $nbt) : Egg{
 			return new Egg(Helper::parseLocation($nbt, $world), null, $nbt);

@@ -97,7 +97,7 @@ final class DedicatedQueryNetworkInterface implements AdvancedNetworkInterface{
 			throw new \RuntimeException("Failed to bind to $this->ip $this->port: " . trim(socket_strerror($error)), $error);
 		}
 		socket_set_nonblock($this->socket);
-		$this->logger->info("Running on $this->ip $this->port");
+		$this->logger->info("Running on $this->ip:$this->port");
 	}
 
 	public function setName(string $name) : void{

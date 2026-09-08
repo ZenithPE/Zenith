@@ -21,20 +21,22 @@
  * @link https://github.com/altayofficial
  */
 
+
 declare(strict_types=1);
 
-namespace pocketmine\network\mcpe\raklib;
+namespace pocketmine\block;
 
-use pmmp\thread\ThreadSafeArray;
-use raklib\server\ipc\InterThreadChannelReader;
+use pocketmine\block\utils\Colored;
+use pocketmine\block\utils\ColoredTrait;
 
-final class PthreadsChannelReader implements InterThreadChannelReader{
-	/**
-	 * @phpstan-param ThreadSafeArray<int, string> $buffer
-	 */
-	public function __construct(private ThreadSafeArray $buffer){}
+class WoolSlab extends Slab implements Colored{
+	use ColoredTrait;
 
-	public function read() : ?string{
-		return $this->buffer->shift();
+	public function getFlameEncouragement() : int{
+		return 30;
+	}
+
+	public function getFlammability() : int{
+		return 60;
 	}
 }

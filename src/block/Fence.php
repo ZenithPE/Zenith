@@ -25,15 +25,16 @@ declare(strict_types=1);
 
 namespace pocketmine\block;
 
+use pocketmine\block\utils\HorizontalConnections;
+use pocketmine\block\utils\HorizontalConnectionsTrait;
 use pocketmine\block\utils\SupportType;
 use pocketmine\math\Axis;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Facing;
 use function count;
 
-class Fence extends Transparent{
-	/** @var bool[] facing => dummy */
-	protected array $connections = [];
+class Fence extends Transparent implements HorizontalConnections{
+	use HorizontalConnectionsTrait;
 
 	public function getThickness() : float{
 		return 0.25;
@@ -44,16 +45,18 @@ class Fence extends Transparent{
 
 		$this->collisionBoxes = null;
 
-		foreach(Facing::HORIZONTAL as $facing){
-			$block = $this->getSide($facing);
-			if($block instanceof static || $block instanceof FenceGate || $block->getSupportType(Facing::opposite($facing)) === SupportType::FULL){
-				$this->connections[$facing] = true;
-			}else{
-				unset($this->connections[$facing]);
-			}
-		}
-
 		return $this;
+	}
+
+	public function onNearbyBlockChange() : void{
+		if($this->recalculateConnections()){
+			$this->position->getWorld()->setBlock($this->position, $this);
+		}
+	}
+
+	protected function canConnectTo(int $facing) : bool{
+		$block = $this->getSide($facing);
+		return $block instanceof static || $block instanceof FenceGate || $block->getSupportType(Facing::opposite($facing)) === SupportType::FULL;
 	}
 
 	protected function recalculateCollisionBoxes() : array{

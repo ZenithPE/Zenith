@@ -23,18 +23,17 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\network\mcpe\raklib;
+namespace pocketmine\block;
 
-use pmmp\thread\ThreadSafeArray;
-use raklib\server\ipc\InterThreadChannelWriter;
+use pocketmine\item\Item;
 
-final class PthreadsChannelWriter implements InterThreadChannelWriter{
-	/**
-	 * @phpstan-param ThreadSafeArray<int, string> $buffer
-	 */
-	public function __construct(private ThreadSafeArray $buffer){}
+class RedShrub extends DeadBush{
 
-	public function write(string $str) : void{
-		$this->buffer[] = $str;
+	public function getDropsForCompatibleTool(Item $item) : array{
+		return [$this->asItem()];
+	}
+
+	public function getDropsForIncompatibleTool(Item $item) : array{
+		return [];
 	}
 }

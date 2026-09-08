@@ -36,6 +36,7 @@ final class BedrockDataFiles{
 	public const BIOME_DEFINITIONS_NBT = BEDROCK_DATA_PATH . '/biome_definitions.nbt';
 	public const BIOME_ID_MAP_JSON = BEDROCK_DATA_PATH . '/biome_id_map.json';
 	public const BIOMES_JSON = BEDROCK_DATA_PATH . '/biomes.json';
+	public const BLOCK_DEFINITIONS_NBT = BEDROCK_DATA_PATH . '/block_definitions.nbt';
 	public const BLOCK_ID_TO_ITEM_ID_MAP_JSON = BEDROCK_DATA_PATH . '/block_id_to_item_id_map.json';
 	public const BLOCK_PALETTE_NBT = BEDROCK_DATA_PATH . '/block_palette.nbt';
 	public const BLOCK_PROPERTIES_TABLE_JSON = BEDROCK_DATA_PATH . '/block_properties_table.json';
@@ -58,4 +59,5 @@ final class BedrockDataFiles{
 	public const R16_TO_CURRENT_ITEM_MAP_JSON = BEDROCK_DATA_PATH . '/r16_to_current_item_map.json';
 	public const RECIPES_JSON = BEDROCK_DATA_PATH . '/recipes.json';
 	public const TRIM_DATA_JSON = BEDROCK_DATA_PATH . '/trim_data.json';
+	public const VOXEL_SHAPES_JSON = BEDROCK_DATA_PATH . '/voxel_shapes.json';
 }

@@ -23,8 +23,11 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\network\mcpe\raklib;
+namespace pocketmine\network\mcpe\transport;
 
+use altay\network\ipc\MainToTransportThreadMessageReceiver;
+use altay\network\ipc\TransportToMainThreadMessageSender;
+use altay\network\transport\TransportException;
 use pmmp\thread\Thread as NativeThread;
 use pmmp\thread\ThreadSafeArray;
 use pocketmine\snooze\SleeperHandlerEntry;
@@ -32,22 +35,20 @@ use pocketmine\thread\log\ThreadSafeLogger;
 use pocketmine\thread\NonThreadSafeValue;
 use pocketmine\thread\Thread;
 use pocketmine\thread\ThreadCrashException;
-use raklib\generic\SocketException;
-use raklib\server\ipc\RakLibToUserThreadMessageSender;
-use raklib\server\ipc\UserToRakLibThreadMessageReceiver;
-use raklib\server\Server;
-use raklib\server\ServerSocket;
-use raklib\server\SimpleProtocolAcceptor;
-use raklib\utils\ExceptionTraceCleaner;
-use raklib\utils\InternetAddress;
 use function gc_disable;
+use function hrtime;
 use function ini_set;
+use function intdiv;
+use function usleep;
 
-class RakLibServer extends Thread{
+class TransportThread extends Thread{
+
+	private const TICK_INTERVAL_MICROS = 5000;
+
 	protected bool $ready = false;
 	protected string $mainPath;
-	/** @phpstan-var NonThreadSafeValue<InternetAddress> */
-	protected NonThreadSafeValue $address;
+	/** @phpstan-var NonThreadSafeValue<TransportFactory> */
+	protected NonThreadSafeValue $factory;
 
 	/**
 	 * @phpstan-param ThreadSafeArray<int, string> $mainToThreadBuffer
@@ -57,14 +58,11 @@ class RakLibServer extends Thread{
 		protected ThreadSafeLogger $logger,
 		protected ThreadSafeArray $mainToThreadBuffer,
 		protected ThreadSafeArray $threadToMainBuffer,
-		InternetAddress $address,
-		protected int $serverId,
-		protected int $maxMtuSize,
-		protected int $protocolVersion,
+		TransportFactory $factory,
 		protected SleeperHandlerEntry $sleeperEntry
 	){
 		$this->mainPath = \pocketmine\PATH;
-		$this->address = new NonThreadSafeValue($address);
+		$this->factory = new NonThreadSafeValue($factory);
 	}
 
 	public function startAndWait(int $options = NativeThread::INHERIT_NONE) : void{
@@ -76,45 +74,59 @@ class RakLibServer extends Thread{
 		});
 		$crashInfo = $this->getCrashInfo();
 		if($crashInfo !== null){
-			if($crashInfo->getType() === SocketException::class){
-				throw new SocketException($crashInfo->getMessage());
+			if($crashInfo->getType() === TransportException::class){
+				throw new TransportException($crashInfo->getMessage());
 			}
-			throw new ThreadCrashException("RakLib failed to start", $crashInfo);
+			throw new ThreadCrashException("Transport thread failed to start", $crashInfo);
 		}
 	}
 
 	protected function onRun() : void{
-		//RakLib has cycles (e.g. ServerSession <-> Server) but these cycles are explicitly cleaned up anyway, and are
-		//very few, so it's pointless to waste CPU time on GC
 		gc_disable();
 
 		ini_set("display_errors", '1');
 		ini_set("display_startup_errors", '1');
 		\GlobalLogger::set($this->logger);
 
-		$socket = new ServerSocket($this->address->deserialize());
-		$manager = new Server(
-			$this->serverId,
-			$this->logger,
-			$socket,
-			$this->maxMtuSize,
-			new SimpleProtocolAcceptor($this->protocolVersion),
-			new UserToRakLibThreadMessageReceiver(new PthreadsChannelReader($this->mainToThreadBuffer)),
-			new RakLibToUserThreadMessageSender(new SnoozeAwarePthreadsChannelWriter($this->threadToMainBuffer, $this->sleeperEntry->createNotifier())),
-			new ExceptionTraceCleaner($this->mainPath),
-			recvMaxSplitParts: 512
+		$transport = $this->factory->deserialize()->make($this->logger);
+		$transport->start(new TransportToMainThreadMessageSender(
+			new SnoozeAwarePthreadsChannelWriter($this->threadToMainBuffer, $this->sleeperEntry->createNotifier())
+		));
+
+		$commandReceiver = new MainToTransportThreadMessageReceiver(
+			new PthreadsChannelReader($this->mainToThreadBuffer)
 		);
+
 		$this->synchronized(function() : void{
 			$this->ready = true;
 			$this->notify();
 		});
-		while(!$this->isKilled){
-			$manager->tickProcessor();
+
+		//transports that block internally to pace themselves must not be slept on top of, or they lag
+		$selfPacing = $transport->isSelfPacing();
+
+		while(!$this->isKilled && !$commandReceiver->isShutdownRequested()){
+			$start = hrtime(true);
+
+			while($commandReceiver->handle($transport));
+			if($commandReceiver->isShutdownRequested()){
+				break;
+			}
+			$transport->tick();
+
+			if(!$selfPacing){
+				$elapsedMicros = intdiv(hrtime(true) - $start, 1000);
+				if($elapsedMicros < self::TICK_INTERVAL_MICROS){
+					usleep(self::TICK_INTERVAL_MICROS - $elapsedMicros);
+				}
+			}
 		}
-		$manager->waitShutdown();
+
+		while($commandReceiver->handle($transport));
+		$transport->shutdown();
 	}
 
 	public function getThreadName() : string{
-		return "RakLib";
+		return "Transport";
 	}
 }

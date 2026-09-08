@@ -64,7 +64,11 @@ use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\PacketBroadcaster;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\CompressionAlgorithm;
-use pocketmine\network\mcpe\raklib\RakLibInterface;
+use altay\network\nethernet\NetherNetTransport;
+use pocketmine\network\mcpe\transport\NetherNetTransportFactory;
+use pocketmine\network\mcpe\transport\RakNetTransportFactory;
+use pocketmine\network\mcpe\transport\ThreadedTransport;
+use pocketmine\network\mcpe\transport\TransportNetworkInterface;
 use pocketmine\network\mcpe\StandardEntityEventBroadcaster;
 use pocketmine\network\mcpe\StandardPacketBroadcaster;
 use pocketmine\network\Network;
@@ -103,6 +107,7 @@ use pocketmine\thread\ThreadSafeClassLoader;
 use pocketmine\timings\Timings;
 use pocketmine\timings\TimingsHandler;
 use pocketmine\utils\AssumptionFailedError;
+use pocketmine\utils\Binary;
 use pocketmine\utils\BroadcastLoggerForwarder;
 use pocketmine\utils\Config;
 use pocketmine\utils\Filesystem;
@@ -153,6 +158,7 @@ use function is_string;
 use function json_decode;
 use function max;
 use function microtime;
+use function mt_rand;
 use function min;
 use function mkdir;
 use function ob_end_flush;
@@ -1246,6 +1252,76 @@ class Server {
 		return !$anyWorldFailedToLoad;
 	}
 
+	/**
+	 * The STUN and TURN servers NetherNet gathers candidates from. An empty list leaves the transport
+	 * with host candidates only, which is all a player on the same network ever needs.
+	 *
+	 * @return string[]
+	 */
+	private function getNetherNetIceServers() : array{
+		$configured = $this->configGroup->getProperty(Yml::NETWORK_NETHERNET_ICE_SERVERS, []);
+		if(!is_array($configured)){
+			$this->logger->warning("Ignoring " . Yml::NETWORK_NETHERNET_ICE_SERVERS . ", it must be a list of URLs");
+			return [];
+		}
+
+		$servers = [];
+		foreach($configured as $server){
+			if(!is_string($server) || $server === ""){
+				$this->logger->warning("Ignoring a NetherNet ICE server entry, it is not a URL");
+				continue;
+			}
+			$servers[] = $server;
+		}
+		return $servers;
+	}
+
+	/**
+	 * Whether a connection has to carry a signed identity assertion, for players found on the local
+	 * network and for players joining by address.
+	 *
+	 * A client that joins by address is signed in and signs its offer, and that signature is the only
+	 * thing tying the connection to the identity it then logs in with - so with xbox-auth on it is
+	 * required by default. A client that broadcasts on the local network does not sign, so requiring
+	 * it there is left to whoever knows their players.
+	 *
+	 * @return array{bool, bool}
+	 */
+	private function getNetherNetIdentityPolicy() : array{
+		$configured = $this->configGroup->getProperty(Yml::NETWORK_NETHERNET_REQUIRE_IDENTITY, "auto");
+		if(is_bool($configured)){
+			return [$configured, $configured];
+		}
+		if(!is_string($configured) || strtolower($configured) !== "auto"){
+			$this->logger->warning("Ignoring " . Yml::NETWORK_NETHERNET_REQUIRE_IDENTITY . ", expected true, false or auto");
+		}
+		return [false, $this->getOnlineMode()];
+	}
+
+	/**
+	 * The local addresses NetherNet offers players a path on. Every address the ICE agent gathers on
+	 * costs a socket per player, and most machines have a few no player could ever reach.
+	 *
+	 * @return string[]
+	 */
+	private function getNetherNetIceInterfaces() : array{
+		$configured = $this->configGroup->getProperty(Yml::NETWORK_NETHERNET_INTERFACES, []);
+		if(!is_array($configured)){
+			$this->logger->warning("Ignoring " . Yml::NETWORK_NETHERNET_INTERFACES . ", it must be a list of addresses");
+			return [];
+		}
+
+		$interfaces = [];
+		foreach($configured as $address){
+			if(!is_string($address) || $address === ""){
+				$this->logger->warning("Ignoring a NetherNet interface entry, it is not an address");
+				continue;
+			}
+			$interfaces[] = $address;
+		}
+		return $interfaces;
+	}
+
 	private function startupPrepareConnectableNetworkInterfaces(
 		string $ip,
 		int $port,
@@ -1256,8 +1332,62 @@ class Server {
 		TypeConverter $typeConverter
 	) : bool{
 		$prettyIp = $ipV6 ? "[$ip]" : $ip;
+		$transportMode = strtolower($this->configGroup->getPropertyString(Yml::NETWORK_TRANSPORT, "nethernet"));
+		if($transportMode !== "raknet" && $transportMode !== "nethernet" && $transportMode !== "both"){
+			$this->logger->warning("Unknown network transport \"$transportMode\", defaulting to \"nethernet\"");
+			$transportMode = "nethernet";
+		}
+		$useRakNet = $transportMode === "raknet" || $transportMode === "both";
+		$useNetherNet = ($transportMode === "nethernet" || $transportMode === "both") && !$ipV6; //nethernet discovery uses a single broadcast socket, a separate IPv6 bind is not needed
+		if($useRakNet && !$ipV6){ //only warn once, on the primary IPv4 pass
+			$this->logger->warning("----------------------------------------");
+			$this->logger->warning("The RakNet transport is deprecated and may be removed in a future release.");
+			$this->logger->warning("Consider switching \"network.transport\" to \"nethernet\" in pocketmine.yml.");
+			$this->logger->warning("----------------------------------------");
+		}
+		$rakNetRegistered = false;
 		try{
-			$rakLibRegistered = $this->network->registerInterface(new RakLibInterface($this, $ip, $port, $ipV6, $packetBroadcaster, $entityEventBroadcaster, $typeConverter));
+			if($useRakNet){
+				$transport = new ThreadedTransport(
+					$this->logger,
+					new RakNetTransportFactory($ip, $port, $ipV6, $this->configGroup->getPropertyInt(Yml::NETWORK_MAX_MTU_SIZE, 1492), mt_rand(0, PHP_INT_MAX)),
+					$this->tickSleeper
+				);
+				$rakNetRegistered = $this->network->registerInterface(new TransportNetworkInterface($this, $transport, $packetBroadcaster, $entityEventBroadcaster, $typeConverter));
+				if($rakNetRegistered){
+					$this->logger->info($this->language->translate(KnownTranslationFactory::pocketmine_server_networkStart($prettyIp, (string) $port)));
+				}
+			}
+			if($useNetherNet){
+				[$requireIdentity, $requireEndpointIdentity] = $this->getNetherNetIdentityPolicy();
+				$transport = new ThreadedTransport(
+					$this->logger,
+					new NetherNetTransportFactory(
+						Binary::readLLong(substr(hash("sha256", $this->getServerUniqueId()->getBytes(), true), 0, 8)),
+						$this->getMotd(),
+						//the title of the world card, which is the world players are joining
+						$this->worldManager->getDefaultWorld()?->getDisplayName() ?? $this->getName(),
+						$this->getMaxPlayers(),
+						$ip,
+						NetherNetTransport::DISCOVERY_PORT,
+						$this->getOnlineMode(),
+						$port,
+						Path::join($this->dataPath, "identity.key"),
+						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_IDENTITY_DOMAIN, "self"),
+						$requireIdentity,
+						$requireEndpointIdentity,
+						$this->getNetherNetIceServers(),
+						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_USERNAME, ""),
+						$this->configGroup->getPropertyString(Yml::NETWORK_NETHERNET_ICE_PASSWORD, ""),
+						$this->configGroup->getPropertyBool(Yml::NETWORK_NETHERNET_RELAY_ONLY, false),
+						$this->getNetherNetIceInterfaces()
+					),
+					$this->tickSleeper
+				);
+				if($this->network->registerInterface(new TransportNetworkInterface($this, $transport, $packetBroadcaster, $entityEventBroadcaster, $typeConverter))){
+					$this->logger->info("NetherNet network interface running on $ip:" . NetherNetTransport::DISCOVERY_PORT);
+				}
+			}
 		}catch(NetworkInterfaceStartException $e){
 			$this->logger->emergency($this->language->translate(KnownTranslationFactory::pocketmine_server_networkStartFailed(
 				$ip,
@@ -1266,12 +1396,9 @@ class Server {
 			)));
 			return false;
 		}
-		if($rakLibRegistered){
-			$this->logger->info($this->language->translate(KnownTranslationFactory::pocketmine_server_networkStart($prettyIp, (string) $port)));
-		}
 		if($useQuery){
-			if(!$rakLibRegistered){
-				//RakLib would normally handle the transport for Query packets
+			if(!$rakNetRegistered){
+				//RakNet would normally handle the transport for Query packets on the server port
 				//if it's not registered we need to make sure Query still works
 				$this->network->registerInterface(new DedicatedQueryNetworkInterface($ip, $port, $ipV6, new \PrefixedLogger($this->logger, "Dedicated Query Interface")));
 			}

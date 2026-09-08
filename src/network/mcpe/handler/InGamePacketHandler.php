@@ -84,6 +84,7 @@ use pocketmine\network\mcpe\protocol\PlayerHotbarPacket;
 use pocketmine\network\mcpe\protocol\PlayerSkinPacket;
 use pocketmine\network\mcpe\protocol\RequestChunkRadiusPacket;
 use pocketmine\network\mcpe\protocol\serializer\BitSet;
+use pocketmine\network\mcpe\protocol\ServerboundDiagnosticsPacket;
 use pocketmine\network\mcpe\protocol\SetActorMotionPacket;
 use pocketmine\network\mcpe\protocol\SetPlayerGameTypePacket;
 use pocketmine\network\mcpe\protocol\SpawnExperienceOrbPacket;
@@ -137,9 +138,12 @@ use const JSON_THROW_ON_ERROR;
 #[SilentDiscard(MovePlayerPacket::class, comment: "Not needed, noisy debug when landing on ground")]
 #[SilentDiscard(NetworkStackLatencyPacket::class, comment: "Not used, noisy debug")]
 #[SilentDiscard(PlayerHotbarPacket::class, comment: "Not needed")]
+#[SilentDiscard(ServerboundDiagnosticsPacket::class, comment: "Not needed, noisy debug")]
 #[SilentDiscard(SetActorMotionPacket::class, comment: "Not needed, erroneously sent by client when in a vehicle")]
 #[SilentDiscard(SpawnExperienceOrbPacket::class, comment: "XP drops should be server-calculated")]
 class InGamePacketHandler extends PacketHandler{
+	use PacketViolationWarningTrait;
+
 	private const MAX_FORM_RESPONSE_SIZE = 10 * 1024; //10 KiB should be more than enough
 	private const MAX_FORM_RESPONSE_DEPTH = 2; //modal/simple will be 1, custom forms 2 - they will never contain anything other than string|int|float|bool|null
 
@@ -333,9 +337,6 @@ class InGamePacketHandler extends PacketHandler{
 		$result = true;
 
 		$trData = $packet->trData;
-		if($trData === null){
-			throw new PacketHandlingException("Inventory transaction data is missing");
-		}
 
 		if(count($trData->getActions()) > 50){
 			throw new PacketHandlingException("Too many actions in inventory transaction");
@@ -849,6 +850,11 @@ class InGamePacketHandler extends PacketHandler{
 			$this->inventoryManager->onClientOpenMainInventory();
 			return true;
 		}
+		if($packet->action === InteractPacket::ACTION_LEAVE_VEHICLE){
+			//the client asks to get off whatever it thinks it is riding, which is not necessarily the target
+			$vehicle = $this->player->getVehicle();
+			return $vehicle !== null && $vehicle->removePassenger($this->player);
+		}
 		return false; //TODO
 	}
 
@@ -1120,6 +1126,9 @@ class InGamePacketHandler extends PacketHandler{
 		switch($packet->type){
 			case BookEditPacket::TYPE_REPLACE_PAGE:
 				$text = self::checkBookText($packet->text, "page text", self::PAGE_LENGTH_SOFT_LIMIT_CHARS, WritableBookPage::PAGE_LENGTH_HARD_LIMIT_BYTES, $cancel);
+				if($packet->pageNumber < 0){
+					throw new PacketHandlingException("Page number cannot be negative");
+				}
 				$newBook->setPageText($packet->pageNumber, $text);
 				$modifiedPages[] = $packet->pageNumber;
 				break;
@@ -1141,6 +1150,9 @@ class InGamePacketHandler extends PacketHandler{
 				$modifiedPages[] = $packet->pageNumber;
 				break;
 			case BookEditPacket::TYPE_SWAP_PAGES:
+				if($packet->pageNumber < 0 || $packet->secondaryPageNumber < 0){
+					throw new PacketHandlingException("Page numbers cannot be negative");
+				}
 				if(!$newBook->pageExists($packet->pageNumber) || !$newBook->pageExists($packet->secondaryPageNumber)){
 					//the client will create pages on its own without telling us until it tries to switch them
 					$newBook->addPage(max($packet->pageNumber, $packet->secondaryPageNumber));
